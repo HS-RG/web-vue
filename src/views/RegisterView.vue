@@ -5,7 +5,7 @@
             <div class="head">
                 <img class="logo" src="../assets/用户.png" width="64" height="64" />
                 <div class="name">
-                    <div class="title">用户登录</div>
+                    <div class="title">用户注册</div>
                 </div>
 
             </div>
@@ -34,7 +34,7 @@
                     <el-button style="width: 100%" type="primary" @click="handleLogin">立即登录</el-button>
                 </el-form-item>
                 <el-form-item style="display: flex;  justify-content: space-between;">
-                    <el-button class="admin-login-button" style="" type="text" @click="handleRegister">立即注册</el-button>
+                    <el-button class="admin-login-button" style="" type="text" @click="handleUserLogin">用户登录</el-button>
                     <div style="min-width: 55%"></div>
                     <el-button class="admin-login-button" style="" type="text" @click="handleAdminLogin">管理员登录</el-button>
                 </el-form-item>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { login } from '@/api/api';
+import { login,register } from '@/api/api';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -61,8 +61,8 @@ const data = reactive({
 const handleLogin = () => {
     loginBase(data.loginData)
 }
-const handleRegister=()=>{
-    router.push("/register");
+const handleUserLogin=()=>{
+    router.push("/");
 }
 const handleAdminLogin = () => {
     router.push("/adminLogin");
@@ -75,10 +75,11 @@ onMounted(() => {
 })
 
 const loginBase = (data) => {
-    login({
+    register({
         username:data.username,
-        userpassword: data.userpassword
+        password: data.userpassword
     }).then(res => {
+
         if (res.success) {
             const toStore = {
                 data: data,
@@ -88,7 +89,7 @@ const loginBase = (data) => {
             sessionStorage.setItem("login", JSON.stringify(toStore))
 
             router.push({
-                path: '/'
+                path: '/about'
             })
         }
     })

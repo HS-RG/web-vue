@@ -1,11 +1,11 @@
 <template>
-    <div class="login-body">
+    <div class="login-body" >
         <div class="title" style="margin-top: 8vh; font-size: 40px; color:#3366FF;  text-shadow: 0 8px 10px #6699FF;  font-weight: bolder;  text-align: center">华师热狗</div>
         <div class="login-container" style="margin-top: -10vh">
             <div class="head">
                 <img class="logo" src="../assets/用户.png" width="64" height="64" />
                 <div class="name">
-                    <div class="title">用户登录</div>
+                    <div class="title">管理员登录</div>
                 </div>
 
             </div>
@@ -36,7 +36,7 @@
                 <el-form-item style="display: flex;  justify-content: space-between;">
                     <el-button class="admin-login-button" style="" type="text" @click="handleRegister">立即注册</el-button>
                     <div style="min-width: 55%"></div>
-                    <el-button class="admin-login-button" style="" type="text" @click="handleAdminLogin">管理员登录</el-button>
+                    <el-button class="admin-login-button" style="" type="text" @click="handleUserLogin">用户登录</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -61,12 +61,13 @@ const data = reactive({
 const handleLogin = () => {
     loginBase(data.loginData)
 }
+const handleUserLogin=()=>{
+    router.push("/");
+}
 const handleRegister=()=>{
     router.push("/register");
 }
-const handleAdminLogin = () => {
-    router.push("/adminLogin");
-}
+
 onMounted(() => {
     // const log = store.state.userInfo;
     // if (log != null) {
@@ -88,7 +89,7 @@ const loginBase = (data) => {
             sessionStorage.setItem("login", JSON.stringify(toStore))
 
             router.push({
-                path: '/'
+                path: '/admin'
             })
         }
     })
