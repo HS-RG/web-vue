@@ -27,11 +27,11 @@
                         trigger: 'blur',
                     }
                 ]">
-                    <el-input type="password" v-model.trim="data.loginData.userpassword" autocomplete="off"></el-input>
+                    <el-input type="password" v-model.trim="data.loginData.password" autocomplete="off"></el-input>
                 </el-form-item>
                 <br />
                 <el-form-item>
-                    <el-button style="width: 100%" type="primary" @click="handleLogin">立即登录</el-button>
+                    <el-button style="width: 100%" type="primary" @click="handleLogin">立即注册</el-button>
                 </el-form-item>
                 <el-form-item style="display: flex;  justify-content: space-between;">
                     <el-button class="admin-login-button" style="" type="text" @click="handleUserLogin">用户登录</el-button>
@@ -48,13 +48,14 @@ import { login,register } from '@/api/api';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import {ElMessage} from "element-plus";
 
 const store = useStore()
 const router = useRouter()
 const data = reactive({
     loginData: {
         username: "",
-        userpassword: "",
+        password: "",
     }
 })
 
@@ -77,22 +78,29 @@ onMounted(() => {
 const loginBase = (data) => {
     register({
         username:data.username,
-        password: data.userpassword
+        password: data.password
     }).then(res => {
-
-        if (res.success) {
+        if (res.code===200) {
             const toStore = {
                 data: data,
-                token: "res.data.token",
+                token: res.data.token,
             }
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
 
             router.push({
-                path: '/about'
+                path: '/login'
             })
         }
-    })
+
+    }).catch(error=>{
+        console.error('注册请求出错:', error);
+        ElMessage({
+            message: error.response.data.msg,
+            type: 'error',
+            duration: 1500,
+        });
+    });
 }
 </script>
 

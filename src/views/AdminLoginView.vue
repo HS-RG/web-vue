@@ -27,7 +27,7 @@
                         trigger: 'blur',
                     }
                 ]">
-                    <el-input type="password" v-model.trim="data.loginData.userpassword" autocomplete="off"></el-input>
+                    <el-input type="password" v-model.trim="data.loginData.password" autocomplete="off"></el-input>
                 </el-form-item>
                 <br />
                 <el-form-item>
@@ -44,17 +44,18 @@
 </template>
 
 <script setup>
-import { login } from '@/api/api';
+import { login,adminLogin } from '@/api/api';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import {ElMessage} from "element-plus";
 
 const store = useStore()
 const router = useRouter()
 const data = reactive({
     loginData: {
         username: "",
-        userpassword: "",
+        password: "",
     }
 })
 
@@ -76,14 +77,15 @@ onMounted(() => {
 })
 
 const loginBase = (data) => {
-    login({
+    adminLogin({
         username:data.username,
-        userpassword: data.userpassword
+        password: data.password
     }).then(res => {
-        if (res.success) {
+        console.log(res);
+        if (res.code===200) {
             const toStore = {
                 data: data,
-                token: "res.data.token",
+                token: res.data.token,
             }
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
@@ -92,7 +94,14 @@ const loginBase = (data) => {
                 path: '/admin'
             })
         }
-    })
+    }).catch(error=>{
+        console.error('登录请求出错:', error);
+        ElMessage({
+            message: "无法登录，用户名或密码不正确或权限不足",
+            type: 'error',
+            duration: 1500,
+        });
+    });
 }
 </script>
 

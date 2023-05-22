@@ -27,7 +27,7 @@
                         trigger: 'blur',
                     }
                 ]">
-                    <el-input type="password" v-model.trim="data.loginData.userpassword" autocomplete="off"></el-input>
+                    <el-input type="password" v-model.trim="data.loginData.password" autocomplete="off"></el-input>
                 </el-form-item>
                 <br />
                 <el-form-item>
@@ -48,13 +48,15 @@ import { login } from '@/api/api';
 import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import {ElMessage} from "element-plus";
+
 
 const store = useStore()
 const router = useRouter()
 const data = reactive({
     loginData: {
-        username: "",
-        userpassword: "",
+        username: "tom",
+        password: "123",
     }
 })
 
@@ -77,21 +79,30 @@ onMounted(() => {
 const loginBase = (data) => {
     login({
         username:data.username,
-        userpassword: data.userpassword
+        password: data.password
     }).then(res => {
-        if (res.success) {
+        console.log("res:",res)
+        if (res.code===200) {
             const toStore = {
                 data: data,
-                token: "res.data.token",
+                token: res.data.token,
             }
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
 
             router.push({
-                path: '/'
+                path: '/resource'
             })
         }
-    })
+
+    }).catch(error=>{
+        console.error('登录请求出错:', error);
+        ElMessage({
+            message: "无法登录，用户名或密码不正确",
+            type: 'error',
+            duration: 1500,
+        });
+    });
 }
 </script>
 

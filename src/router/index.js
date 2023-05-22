@@ -15,6 +15,11 @@ const routes = [
     component: () =>import('../views/RegisterView.vue')
   },
   {
+    path: '/resource',
+    name: 'resource',
+    component: () =>import('../views/ResourceView.vue')
+  },
+  {
     path: '/adminLogin',
     name:'adminLogin',
     component: ()=>import('../views/AdminLoginView.vue')
@@ -57,12 +62,16 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   if((to.path === '/login') || store.state.userInfo) {
-//     next()
-//     return
-//   }
-//  // next('/login')
-// })
+router.beforeEach((to, from, next) => {
+  if((to.path === '/') ||(to.path === '/adminLogin')||(to.path === '/register')|| store.state.userInfo) {
+    next()
+    return
+  }
+  if((from.path==='/user')||(from.path==='/file')||(from.path==='/admin')){
+    next('/adminLogin')
+    return
+  }
+  next('/')
+})
 
 export default router

@@ -3,7 +3,16 @@ import { post, get } from '@/util/service'
 
 export const login = data => {
     return post({
-        url: '/loginIn',
+        url: '/auth/login',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data
+    })
+}
+export const adminLogin = data => {
+    return post({
+        url: '/auth/adminLogin',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -11,10 +20,9 @@ export const login = data => {
     })
 }
 
-
 export const register = data =>{
     return post({
-        url: '/register',
+        url: '/auth/register',
         data,
         headers: {
             'Content-Type': 'application/json'

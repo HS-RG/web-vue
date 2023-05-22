@@ -318,7 +318,9 @@ onMounted(() => {
             nextTick(() => {
                 questionTotal.value = res.recordsTotal
             })
-        })
+        }).catch(error=>{
+            console.error(error);
+        });
         searchIll({
             name: '%'
         }).then(res => {
@@ -326,7 +328,9 @@ onMounted(() => {
                 console.log(res)
           //      illCaseTotal.value = res.data.length
             })
-        })
+        }).catch(error=>{
+            console.error(error);
+        });
         searchPaper({
             paperTitle: '',
             ids: [],
@@ -336,7 +340,9 @@ onMounted(() => {
             nextTick(() => {
                 examinationTotal.value = res.recordsTotal
             })
-        })
+        }).catch(error=>{
+            console.error(error);
+        });
         const login = store.getters.isLogIn;
         if (!login.isLogIn) {
             router.push('/login')
@@ -348,7 +354,9 @@ onMounted(() => {
             nextTick(() => {
        //         userTotal.value = res.data.length
             })
-        })
+        }).catch(error=>{
+            console.error(error);
+        });
     } catch (error){
         console.error();
     }

@@ -14,22 +14,36 @@ const service = axios.create({
 
 //  拦截请求，载入加载动画
 service.interceptors.request.use(config => {
-    return config
+     return config
+    // ,
+    // error => {
+    //     // 请求错误处理
+    //     //console.log('Request Error:', error);
+    //     //return Promise.reject(error);
+    //      }
 })
 
 
 // 对每个响应进行预处理
 service.interceptors.response.use(response => {
     // loadingObj.close()
-    const data = response.data
-    // if(!data.success && data.message !== 'success' && data.message !== '成功') {
-    //     ElMessage({
-    //         message: "出错啦！！！",
-    //         type: 'error',
-    //         duration: 1500,
-    //     })
-    // }
-    return data
+    return response.data
+        // ,
+        // error => {
+        //     // 响应错误处理
+        //     if (error.response) {
+        //         // 请求已发送，服务器返回错误状态码
+        //         console.log('Response Error:', error.response.status);
+        //         console.log('Response Error Data:', error.response.data);
+        //     } else if (error.request) {
+        //         // 请求已发送，但没有收到响应
+        //         console.log('No Response:', error.request);
+        //     } else {
+        //         // 其他错误
+        //         console.log('Error:', error.message);
+        //     }
+        //     return Promise.reject(error);
+        // }
 })
 
 // post封装

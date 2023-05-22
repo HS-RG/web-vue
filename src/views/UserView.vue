@@ -155,7 +155,7 @@ export default {
             sessionStorage.removeItem('login');
             sessionStorage.removeItem('login');
             console.log(sessionStorage.getItem('login'));
-            this.$router.push('/login');
+            this.$router.push('/adminLogin');
         },
 
 
@@ -219,7 +219,7 @@ const handleUpdateSubmit = () => {
     const login = store.getters.isLogIn;
 
     if(!login.isLogIn) {
-        router.push('/login')
+        router.push('/adminLogin')
     }
     console.log(editData.value.name)
     updateUser({
@@ -251,7 +251,7 @@ const handleUpdatePasswordSubmit = () => {
     const login = store.getters.isLogIn;
 
     if(!login.isLogIn) {
-        router.push('/login')
+        router.push('/adminLogin')
     }
     console.log(editData.value.name)
     changePassword({
@@ -277,7 +277,7 @@ const upManage = () => {
     const login = store.getters.isLogIn;
 
     if(!login.isLogIn) {
-        router.push('/login')
+        router.push('/adminLogin')
     }
     console.log(editData.value.name)
     setUserType({
@@ -295,14 +295,16 @@ const upManage = () => {
             })
         }
 
-    })
+    }).catch(error=>{
+        console.error(error);
+    });
 }
 const downUser = () => {
 
     const login = store.getters.isLogIn;
 
     if(!login.isLogIn) {
-        router.push('/login')
+        router.push('/adminLogin')
     }
     console.log(editData.value.name)
     setUserType({
@@ -320,7 +322,9 @@ const downUser = () => {
             })
         }
 
-    })
+    }).catch(error=>{
+        console.error(error);
+    });
 }
 
 const handleUpdatePasswordReset = () => {
@@ -389,21 +393,10 @@ const handleDelete = (data) => {
 const search = (arg, page) => {
     if (arg === '') {
         arg = '%'
-        // searchExam({
-        //   ids:[0],
-        //   examTitle:"犬科考试",
-        //   start:0,
-        //   length:8000,
-        // }).then(
-        //     res =>{
-        //       console.log(res.message),
-        //           console.log(res.data)
-        //     }
-        // )
     }
     const login = store.getters.isLogIn;
     if (!login.isLogIn) {
-        router.push('/login')
+        router.push('/adminLogin')
     }
     searchUser({
         token: login.token,
@@ -420,7 +413,9 @@ const search = (arg, page) => {
         console.log(tableData);
         console.log(tableData.value);
 
-    })
+    }).catch(error=>{
+        console.error(error);
+    });
 }
 const handleSearch = () => {
     // console.log("outside", search('user'))
