@@ -22,6 +22,7 @@ body, html {
     align-items: center;
 }
 
+
 </style>
 <script setup>
 </script>
