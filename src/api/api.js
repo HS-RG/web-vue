@@ -1,4 +1,4 @@
-import { post, get } from '@/util/service'
+import {post, get, post2} from '@/util/service'
 
 
 export const login = data => {
@@ -32,11 +32,53 @@ export const register = data =>{
 
 
 export const searchUser = data => {
-    return post({
-        url: '/loginIn',
-        data
+    return post2({
+        url: '/user/listByNickname',
+        data,
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            'Authorization': login.token
+        }
+
     })
 }
+export const findUserById = data => {
+return post2({
+    url: '/user/selectByUserId',
+    data,
+    headers:{
+        'Content-Type': 'application/json',
+        'Authorization': login.token
+    }
+
+})
+}
+export const queryAdminById = data => {
+    return post({
+        url: '/auth/queryIsAdmin',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+
+    })
+}
+
+export const setUserType = data => {
+    return post({
+        url: '/auth/setIsAdmin',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+
+
+
+
 export const removeUser = data => {
     return post({
         url: '/loginIn',
@@ -64,12 +106,7 @@ export const updateUser = data => {
         data
     })
 }
-export const setUserType = data => {
-    return post({
-        url: '/loginIn',
-        data
-    })
-}
+
 export const addIll = data => {
     return post({
         url: '/loginIn',

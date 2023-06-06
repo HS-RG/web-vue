@@ -80,16 +80,20 @@ const loginBase = (data) => {
         username:data.username,
         password: data.password
     }).then(res => {
-        if (res.code===200) {
+        if (res.code===1) {
             const toStore = {
                 data: data,
                 token: res.data.token,
             }
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
-
+            ElMessage({
+                message: "注册成功，自动登录",
+                type: 'success',
+                duration: 1500,
+            });
             router.push({
-                path: '/login'
+                path: '/'
             })
         }
 

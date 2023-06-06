@@ -129,9 +129,9 @@ export default {
     name: "AboutView",
     data: function () {
         return {
-            wellCome: JSON.parse(sessionStorage.getItem('login')).data.username,
+          wellCome:JSON.parse(sessionStorage.getItem('login')).data &&JSON.parse(sessionStorage.getItem('login')).data.username?JSON.parse(sessionStorage.getItem('login')).data.username:""
 
-        }
+    }
     },
 
     methods: {
@@ -247,7 +247,7 @@ const handleClickEdit = (data) => {
     const login = store.getters.isLogIn;
     searchUser({
         token: login.token,
-        username: '%',
+        username: '',
 
     }).then(res => {
         console.log(res);
@@ -305,63 +305,75 @@ const userTotal = ref(24)
 const questionTotal = ref(37)
 const illCaseTotal = ref(31)
 const examinationTotal = ref(22)
-onMounted(() => {
-    console.error = () => {}; // 重写console.error方法，使其不执行任何操作
-    try {
-        console.log(route.meta.showDashboard)
-        searchQuestion({
-            illCaseTypes: [],
-            context: "",
-            start: 0,
-            length: 10000
-        }).then(res => {
-            nextTick(() => {
-                questionTotal.value = res.recordsTotal
-            })
-        }).catch(error=>{
-            console.error(error);
-        });
-        searchIll({
-            name: '%'
-        }).then(res => {
-            nextTick(() => {
-                console.log(res)
-          //      illCaseTotal.value = res.data.length
-            })
-        }).catch(error=>{
-            console.error(error);
-        });
-        searchPaper({
-            paperTitle: '',
-            ids: [],
-            length: 8000,
-            start: 0
-        }).then(res => {
-            nextTick(() => {
-                examinationTotal.value = res.recordsTotal
-            })
-        }).catch(error=>{
-            console.error(error);
-        });
-        const login = store.getters.isLogIn;
-        if (!login.isLogIn) {
-            router.push('/login')
-        }
-        searchUser({
-            token: login.token,
-            username: '%',
-        }).then(res => {
-            nextTick(() => {
-       //         userTotal.value = res.data.length
-            })
-        }).catch(error=>{
-            console.error(error);
-        });
-    } catch (error){
-        console.error();
-    }
-
-})
+// onMounted(() => {
+//     console.error = () => {}; // 重写console.error方法，使其不执行任何操作
+//     try {
+//         console.log(route.meta.showDashboard)
+//         searchUser({
+//             illCaseTypes: [],
+//             context: "",
+//             start: 0,
+//             length: 10000
+//         }).then(res => {
+//             nextTick(() => {
+//                 questionTotal.value = res.recordsTotal
+//             })
+//         }).catch(error=>{
+//             console.error(error);
+//         });
+//         searchUser({
+//             name: ''
+//         }).then(res => {
+//             nextTick(() => {
+//                 console.log(res)
+//           //      illCaseTotal.value = res.data.length
+//             })
+//         }).catch(error=>{
+//             console.error(error);
+//         });
+//         searchUser({
+//             paperTitle: '',
+//             ids: [],
+//             length: 8000,
+//             start: 0
+//         }).then(res => {
+//             nextTick(() => {
+//                 examinationTotal.value = res.recordsTotal
+//             })
+//         }).catch(error=>{
+//             console.error(error);
+//         });
+//         const login = store.getters.isLogIn;
+//         if (!login.isLogIn) {
+//             router.push('/login')
+//         }
+//         searchUser({
+//             token: login.token,
+//             nickname: '',
+//             pageSize:10,
+//             pageNumber:1
+//         },{
+//             params:{
+//                 nickname:'',
+//                 pageSize:10,
+//                 pageNumber:1
+//             }
+//         }, {
+//             headers: {
+//                 Authorization: login.token
+//             }
+//         }).then(res => {
+//             nextTick(() => {
+//        //         userTotal.value = res.data.length
+//             })
+//         }).catch(error=>{
+//             console.error(error);
+//         });
+//     } catch (error){
+//         console.error();
+//     }
+//
+// })
 
 
 

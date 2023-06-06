@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import Layout from '../views/AdminView.vue'
+
 import store from "@/store";
 
 const routes = [
@@ -62,16 +62,16 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if((to.path === '/') ||(to.path === '/adminLogin')||(to.path === '/register')|| store.state.userInfo) {
-    next()
-    return
-  }
-  if((from.path==='/user')||(from.path==='/file')||(from.path==='/admin')){
-    next('/adminLogin')
-    return
-  }
-  next('/')
-})
+// router.beforeEach((to, from, next) => {
+//   if((to.path === '/') ||(to.path === '/adminLogin')||(to.path === '/register')|| store.state.userInfo) {
+//     next()
+//     return
+//   }
+//   if((from.path==='/user')||(from.path==='/file')||(from.path==='/admin')){
+//     next('/adminLogin')
+//     return
+//   }
+//   next('/')
+// })
 
 export default router

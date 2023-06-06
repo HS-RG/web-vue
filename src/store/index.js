@@ -10,11 +10,13 @@ export default createStore({
         return {
           isLogIn: false,
           token: "",
+          id:"",
         }
       } else {
         return {
           isLogIn: true,
           token: state.userInfo.token,
+          id:state.userInfo.id
         }
       }
     }

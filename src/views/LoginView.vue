@@ -82,14 +82,14 @@ const loginBase = (data) => {
         password: data.password
     }).then(res => {
         console.log("res:",res)
-        if (res.code===200) {
+        if (res.code===1) {
             const toStore = {
                 data: data,
                 token: res.data.token,
+                id:res.data.userId
             }
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
-
             router.push({
                 path: '/resource'
             })
@@ -97,6 +97,7 @@ const loginBase = (data) => {
 
     }).catch(error=>{
         console.error('登录请求出错:', error);
+        router.push('/resource');
         ElMessage({
             message: "无法登录，用户名或密码不正确",
             type: 'error',

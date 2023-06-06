@@ -82,11 +82,14 @@ const loginBase = (data) => {
         password: data.password
     }).then(res => {
         console.log(res);
-        if (res.code===200) {
+        if (res.code===1) {
+            console.log(res.data)
             const toStore = {
                 data: data,
                 token: res.data.token,
+                id:res.data.userId
             }
+            console.log(toStore.id)
             store.commit('setUserInfo', toStore)
             sessionStorage.setItem("login", JSON.stringify(toStore))
 
