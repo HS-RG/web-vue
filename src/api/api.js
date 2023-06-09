@@ -106,6 +106,27 @@ export const getOneFile = data => {
         }
     })
 }
+export const DeleteOneFile = data => {
+    return post3({
+        url: '/file/DeleteOneFile',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+export const DeleteOneUser = data => {
+    return post2({
+        url: '/deleteOneUser',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+
 export const getMyDetail = data => {
     return post2({
         url: '/user/getMyDetail',

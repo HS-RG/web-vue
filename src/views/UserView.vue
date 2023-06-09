@@ -50,15 +50,22 @@
                             <Edit />
                         </el-icon>
                     </el-button>
-                    <el-button
-                            type="danger"
-                            v-model="scope.row.id"
-                            @click="handleDelete(scope.row)"
-                    >
-                        <el-icon>
-                            <Delete />
-                        </el-icon>
-                    </el-button>
+                    <el-popconfirm title="Are you sure to delete this?"
+                                   @confirm="handleDelete(scope.row)"
+                                   @cancel="cancelEvent">
+                        <template #reference>
+                            <el-button
+                                type="danger"
+                                v-model="scope.row.id"
+
+                            >
+                                <el-icon>
+                                    <Delete />
+                                </el-icon>
+                            </el-button>
+                        </template>
+                    </el-popconfirm>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -181,7 +188,7 @@ import {
     removeUser,
     updateUser,
     queryAdminById,
-    updateOneUser
+    updateOneUser, DeleteOneFile, DeleteOneUser
 } from '@/api/api';
 import {ElMessage} from "element-plus";
 const url=ref("")
@@ -299,7 +306,7 @@ const upManage = () => {
     setUserType({
         token: login.token,
         userId:userData.value.id,
-        idAdmin:1
+        isAdmin:true
     }).then(res => {
         dialogUserTypeVisible.value = false;
         const login = JSON.parse(sessionStorage.getItem('login') || '{}');
@@ -325,12 +332,12 @@ const downUser = () => {
     console.log(editData.value.name)
     setUserType({
         token: login.token,
-        id:userData.value.id,
-        idAdmin:0
+        userId:userData.value.id,
+        isAdmin:false
     }).then(res => {
         dialogUserTypeVisible.value = false;
         const login = JSON.parse(sessionStorage.getItem('login') || '{}');
-        if(res.success===true){
+        if(res.code===1){
             search('',currentPage.value)
             ElMessage({
                 message: '设置成功',
@@ -374,11 +381,11 @@ const handleChangePassword = (data) => {
 
 const handleDelete = (data) => {
     const login = store.getters.isLogIn;
-    removeUser({
+    DeleteOneUser({
         token:login.token,
-        id:data.id
+        userId:data.id
     }).then(res=>{
-        if(res.success){
+        if(res.msg==="success"){
             ElMessage({
                 message: '删除成功',
                 type: 'success',
@@ -429,7 +436,7 @@ const search = (arg, page) => {
                 tableData.value[i] = {
                     id: res.data[i].userId,
                     username: res.data[i].username,
-                    // usertype: usertype[i] === 1 ? "管理员" : "普通用户",
+
                     addTime: res.data[i].createTime,
                     latestTime: res.data[i].updateTime,
                     nickname: res.data[i].nickname

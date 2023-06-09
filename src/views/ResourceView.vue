@@ -247,7 +247,7 @@ const sendComment = (cardId) => {
             context:commentText.value,
             authorId:store.getters.isLogIn.id,
             type:1,
-            parentId:'3101483318903427072'
+            parentId:sessionStorage.getItem('fileId')
         }).then(res=>{
             if(res.code===1){
 
@@ -256,10 +256,11 @@ const sendComment = (cardId) => {
                     type: 'success',
                     duration: 1500,
                 });
+                commentText.value=""
             }
         })
     }
-    searchCommentById('3101483318903427072');
+    searchCommentById(sessionStorage.getItem('fileId'));
 };
 const replyComment = (cardId) => {
     selectedCommentId.value = cardId;
@@ -275,7 +276,7 @@ const replyCommentSubmit = () => {
         parentId:selectedCommentId.value
     }).then(res=>{
         if(res.code===1){
-            searchCommentById('3101483318903427072');
+            searchCommentById(sessionStorage.getItem('fileId'));
         }
     })
     dialogReplyVisible.value=false
@@ -284,8 +285,8 @@ const replyCommentSubmit = () => {
 const deleteComment = (cardId) => {
     deleteOneComment({
         commentId:cardId
-    })
-    ;
+    });
+    searchCommentById(sessionStorage.getItem('fileId'))
 };
 //const cardData= ref( null)
 
@@ -298,6 +299,8 @@ const findImageById=(Id)=>{
         console.log(res.data);
         userName.value=res.data.username
         Image.value=res.data.imageUrl;
+    }).catch(error=>{
+        console.log(error);
     });
 }
 const findParentNameById=(Id,Type)=>{
@@ -311,6 +314,8 @@ const findParentNameById=(Id,Type)=>{
             console.log(Image.value);
             console.log(userName.value);
             console.log(ParentName.value);
+        }).catch(error=>{
+            console.log(error);
         });
     }
     else ParentName.value="tom"
@@ -361,72 +366,66 @@ const searchComment=()=>{
     });
 
 }
-const searchCommentById =  (id) => {
-
+const searchCommentById = (id) => {
+    commentList.value=[]
     listAllCommentByParent({
         type: 1,
         parentId: id
-    }).then((res)=>{
-
+    }).then((res) => {
         console.log(res.data);
 
-        for (let i = 0; i < res.data.length; i++) {
-            console.log(res.data[i].authorId);
-            findUserById({userId:res.data[i].authorId}
-            ).then(res1=>{
+        const filteredData = res.data.filter((item) => item.context !== "评论已删除");
+
+        for (let i = 0; i < filteredData.length; i++) {
+            console.log(filteredData[i].authorId);
+            findUserById({ userId: filteredData[i].authorId }).then((res1) => {
                 console.log(res1.data);
-                userName.value=res1.data.username
+                userName.value = res1.data.username;
                 console.log(userName.value);
-                Image.value=res1.data.imageUrl;
-                if(res.data[i].type===2){
-                    findUserById({userId:res.data[i].replyTo }
-                    ).then(res2=>{
+                Image.value = res1.data.imageUrl;
+                if (filteredData[i].type === 2) {
+                    findUserById({ userId: filteredData[i].replyTo }).then((res2) => {
                         console.log(res2.data);
 
                         ParentName.value = "@" + (res2.data?.username || "");
                         commentList.value[i] = {
-                            commentId: res.data[i].commentId.toString(),
+                            commentId: filteredData[i].commentId.toString(),
                             image: Image.value,
-                            authorId: res.data[i].authorId.toString(),
+                            authorId: filteredData[i].authorId.toString(),
                             username: userName.value,
-                            parentId: res.data[i].parentId.toString(),
+                            parentId: filteredData[i].parentId.toString(),
                             parentName: ParentName.value,
-                            commentType: res.data[i].type,
-                            content: res.data[i].context,
-                            time: res.data[i].createTime
+                            commentType: filteredData[i].type,
+                            content: filteredData[i].context,
+                            time: filteredData[i].createTime
                         };
+                    }).catch((error) => {
+                        console.log(error);
                     });
-                }
-                else {
+                } else {
                     commentList.value[i] = {
-                        commentId: res.data[i].commentId.toString(),
+                        commentId: filteredData[i].commentId.toString(),
                         image: Image.value,
-                        authorId: res.data[i].authorId.toString(),
+                        authorId: filteredData[i].authorId.toString(),
                         username: userName.value,
-                        parentId: res.data[i].parentId.toString(),
+                        parentId: filteredData[i].parentId.toString(),
                         parentName: ParentName.value,
-                        commentType: res.data[i].type,
-                        content: res.data[i].context,
-                        time: res.data[i].createTime
+                        commentType: filteredData[i].type,
+                        content: filteredData[i].context,
+                        time: filteredData[i].createTime
                     };
                 }
 
-
                 // 执行其他操作
                 console.log(commentList.value);
-
-
+            }).catch((error) => {
+                console.log(error);
             });
-
-
-
-
-
         }
         console.log(commentList.value);
+    }).catch((error) => {
+        console.log(error);
     });
-
-
 };
 
 
@@ -434,18 +433,24 @@ const searchCommentById =  (id) => {
 
 
 
+
 onMounted(() => {
+
     findUserById({userId:store.getters.isLogIn.id}
     ).then(res=>{
         touxiang.value=res.data.imageUrl;
+    }).catch(error=>{
+        console.log(error);
     });
     getFile()
-    searchCommentById('3101483318903427072');
+    searchCommentById(sessionStorage.getItem('fileId'))
+
+
    // cardData.value=commentList.value
 })
 
-const getFile = (fileId) => {
-    fileId="3101483318903427072"
+const getFile = () => {
+    const fileId=sessionStorage.getItem('fileId')
     getOneFile({
         fileId:fileId
     }).then(resp=>{
@@ -457,7 +462,10 @@ const getFile = (fileId) => {
         course.value=resp.data.courseTag,
         year.value=resp.data.yearTag
         timeUp.value=resp.data.createTime
-    });
+    }).catch(error=>{
+        console.log(error);
+    })
+    ;
 }
 
 
@@ -476,7 +484,10 @@ const download = (url,filename) => {
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
-        });
+        }).catch(error=>{
+            console.log(error);
+    })
+    ;
 }
 
 

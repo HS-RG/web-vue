@@ -62,16 +62,16 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   if((to.path === '/') ||(to.path === '/adminLogin')||(to.path === '/register')|| store.state.userInfo) {
-//     next()
-//     return
-//   }
-//   if((from.path==='/user')||(from.path==='/file')||(from.path==='/admin')){
-//     next('/adminLogin')
-//     return
-//   }
-//   next('/')
-// })
+router.beforeEach((to, from, next) => {
+  if((to.path === '/') ||(to.path === '/adminLogin')||(to.path === '/register')|| store.state.userInfo) {
+    next()
+    return
+  }
+  if((from.path==='/user')||(from.path==='/file')||(from.path==='/admin')){
+    next('/adminLogin')
+    return
+  }
+  next('/')
+})
 
 export default router
