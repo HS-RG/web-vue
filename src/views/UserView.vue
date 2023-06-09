@@ -8,7 +8,7 @@
             <template #dropdown>
                 <el-dropdown-menu>
 
-                    <el-dropdown-item @click="handleClickEdit">修改用户名</el-dropdown-item>
+                    <el-dropdown-item @click="handleClickEdit">修改昵称</el-dropdown-item>
                     <el-dropdown-item @click="handleChangePassword">修改密码</el-dropdown-item>
                     <el-dropdown-item @click="logout">退出</el-dropdown-item>
                 </el-dropdown-menu>
@@ -84,13 +84,13 @@
                 <el-form-item label="ID" prop="id">
                     <el-input v-model="editData.id" autocomplete="off" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="用户名" prop="name">
+                <el-form-item label="昵称" prop="name">
                     <el-input v-model="editData.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="handleUpdateSubmit">提交</el-button>
+                    <el-button type="success" @click="handleUpdateSubmit">提交</el-button>
                     <el-button type="primary" @click="handleUpdateReset">重置</el-button>
-                    <el-button type="primary" @click="dialogVisible = false"
+                    <el-button type="danger" @click="dialogVisible = false"
                     >取消</el-button
                     >
                 </el-form-item>
@@ -173,7 +173,16 @@ export default {
 import {ref, onMounted, watch, nextTick} from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import {changePassword, searchUser, findUserById, setUserType, removeUser, updateUser, queryAdminById} from '@/api/api';
+import {
+    changePassword,
+    searchUser,
+    findUserById,
+    setUserType,
+    removeUser,
+    updateUser,
+    queryAdminById,
+    updateOneUser
+} from '@/api/api';
 import {ElMessage} from "element-plus";
 const url=ref("")
 const store = useStore()
@@ -344,32 +353,8 @@ const handleUpdateReset = () => {
 }
 
 const handleClickEdit = (data) => {
-    // console.log(data)
-    console.log(tableData);
     const login = store.getters.isLogIn;
-    searchUser({
-        token: login.token,
-        nickname: arg,
-        pageSize:pageSize,
-        pageNumber:currentPage.value
-    },{
-        params:{
-            nickname:arg,
-            pageSize:pageSize,
-            pageNumber:currentPage.value
-        }
-    }, {
-        headers: {
-            Authorization: login.token
-        }
-    }).then(res => {
-        console.log(res);
-        const row=res.data.find(user =>user.username === JSON.parse(sessionStorage.getItem('login')).data.username);
-        console.log(row);
-        editData.value['id'] = row ? row.id : null;
-    })
-
-
+    editData.value['id']=JSON.parse(sessionStorage.getItem('login')).id
     editData.value['name'] =  JSON.parse(sessionStorage.getItem('login')).data.username
     editData.value['nameBackup'] =  JSON.parse(sessionStorage.getItem('login')).data.username
     console.log(editData.value)
@@ -427,7 +412,7 @@ const search = (arg, page) => {
     }).then(res => {
         tableData.value=[];
         //  let len=res.length;
-        let len=res.data.length;
+        let len=res.data.length-1;
         let i=0;
         console.log(len);
         nextTick(() => {
@@ -450,11 +435,11 @@ const search = (arg, page) => {
                     nickname: res.data[i].nickname
                 };
             }
-            total.value = 10;
+
             console.log(tableData);
             console.log(tableData.value);
         });
-
+        total.value = res.data[len].length;
 
 
     }).catch(error=>{

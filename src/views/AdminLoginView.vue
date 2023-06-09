@@ -70,10 +70,7 @@ const handleRegister=()=>{
 }
 
 onMounted(() => {
-    // const log = store.state.userInfo;
-    // if (log != null) {
-    //     loginBase(log.data)
-    // }
+
 })
 
 const loginBase = (data) => {

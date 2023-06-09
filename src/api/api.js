@@ -1,4 +1,4 @@
-import {post, get, post2} from '@/util/service'
+import {post, get, post2,post3,post4,post5} from '@/util/service'
 
 
 export const login = data => {
@@ -64,7 +64,17 @@ export const queryAdminById = data => {
 
     })
 }
+export const updateOneUser = data => {
+    return post2({
+        url: '/user/updateOneUser',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
 
+    })
+}
 export const setUserType = data => {
     return post({
         url: '/auth/setIsAdmin',
@@ -75,9 +85,88 @@ export const setUserType = data => {
         }
     })
 }
+export const uploadFile = data => {
+    return post3({
+        url: '/file/uploadFile',
+        data,
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            'Authorization': login.token
+        }
+    })
+}
 
+export const getOneFile = data => {
+    return post3({
+        url: '/file/QueryFileByFileId',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+export const getMyDetail = data => {
+    return post2({
+        url: '/user/getMyDetail',
+        data,
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            'Authorization': login.token
+        }
+    })
+}
 
-
+export const QueryFileList = data => {
+    return post3({
+        url: '/file/QueryFileList',
+        data,
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            'Authorization': login.token
+        }
+    })
+}
+export const listAllCommentByParent = data => {
+    return post5({
+        url: '/comment/listAllCommentByParent',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+export const listCommentByParent = data => {
+    return post5({
+        url: '/comment/listCommentByParent',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+export const createComment = data => {
+    return post5({
+        url: '/comment/createComment',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
+export const deleteOneComment = data => {
+    return post5({
+        url: '/comment/deleteComment',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': login.token
+        }
+    })
+}
 
 export const removeUser = data => {
     return post({
@@ -142,15 +231,7 @@ export const fetchFile = data => {
     })
 }
 
-export const uploadFile = data => {
-    return post({
-        url: '/loginIn',
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        },
-        data
-    })
-}
+
 
 
 export const searchPaper = data =>{

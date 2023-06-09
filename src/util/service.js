@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 const JSONBIGINT = require('json-bigint');
-
+import jsonBig from 'json-bigint'
 const service = axios.create({
     baseURL:'/api'
     ,
@@ -11,7 +11,7 @@ const service = axios.create({
     transformResponse: [
         data => {
             try {
-                return JSONBIGINT.parse(data);
+                return jsonBig.parse(data);
             } catch (err) {
                 return data;
             }
@@ -28,14 +28,61 @@ const service2 = axios.create({
     transformResponse: [
         data => {
             try {
-                return JSONBIGINT.parse(data);
+                return jsonBig.parse(data);
             } catch (err) {
                 return data;
             }
         },
     ],
 })
-
+const service3 = axios.create({
+    baseURL:'/third'
+    ,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    transformResponse: [
+        data => {
+            try {
+                return jsonBig.parse(data);
+            } catch (err) {
+                return data;
+            }
+        },
+    ],
+})
+const service4 = axios.create({
+    baseURL:'/fourth'
+    ,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    transformResponse: [
+        data => {
+            try {
+                return jsonBig.parse(data);
+            } catch (err) {
+                return data;
+            }
+        },
+    ],
+})
+const service5 = axios.create({
+    baseURL:'/fifth'
+    ,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    transformResponse: [
+        data => {
+            try {
+                return jsonBig.parse(data);
+            } catch (err) {
+                return data;
+            }
+        },
+    ],
+})
 
 //  拦截请求，载入加载动画
 service.interceptors.request.use(config => {
@@ -53,55 +100,44 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(response => {
     // loadingObj.close()
     return response.data
-        // ,
-        // error => {
-        //     // 响应错误处理
-        //     if (error.response) {
-        //         // 请求已发送，服务器返回错误状态码
-        //         console.log('Response Error:', error.response.status);
-        //         console.log('Response Error Data:', error.response.data);
-        //     } else if (error.request) {
-        //         // 请求已发送，但没有收到响应
-        //         console.log('No Response:', error.request);
-        //     } else {
-        //         // 其他错误
-        //         console.log('Error:', error.message);
-        //     }
-        //     return Promise.reject(error);
-        // }
+
 })
 //  拦截请求，载入加载动画
 service2.interceptors.request.use(config => {
     return config
-    // ,
-    // error => {
-    //     // 请求错误处理
-    //     //console.log('Request Error:', error);
-    //     //return Promise.reject(error);
-    //      }
-})
 
+})
 
 // 对每个响应进行预处理
 service2.interceptors.response.use(response => {
-    // loadingObj.close()
     return response.data
-    // ,
-    // error => {
-    //     // 响应错误处理
-    //     if (error.response) {
-    //         // 请求已发送，服务器返回错误状态码
-    //         console.log('Response Error:', error.response.status);
-    //         console.log('Response Error Data:', error.response.data);
-    //     } else if (error.request) {
-    //         // 请求已发送，但没有收到响应
-    //         console.log('No Response:', error.request);
-    //     } else {
-    //         // 其他错误
-    //         console.log('Error:', error.message);
-    //     }
-    //     return Promise.reject(error);
-    // }
+})
+//  拦截请求，载入加载动画
+service3.interceptors.request.use(config => {
+    return config
+})
+
+// 对每个响应进行预处理
+service3.interceptors.response.use(response => {
+    return response.data
+})
+//  拦截请求，载入加载动画
+service4.interceptors.request.use(config => {
+    return config
+})
+
+// 对每个响应进行预处理
+service4.interceptors.response.use(response => {
+    return response.data
+})
+//  拦截请求，载入加载动画
+service5.interceptors.request.use(config => {
+    return config
+})
+
+// 对每个响应进行预处理
+service5.interceptors.response.use(response => {
+    return response.data
 })
 // post封装
 export const post = config => {
@@ -119,7 +155,27 @@ export const post2 = config => {
         method: 'POST'
     })
 }
-
+export const post3 = config => {
+    return service3({
+        ...config,
+        data: config.data,
+        method: 'POST'
+    })
+}
+export const post4 = config => {
+    return service4({
+        ...config,
+        data: config.data,
+        method: 'POST'
+    })
+}
+export const post5 = config => {
+    return service5({
+        ...config,
+        data: config.data,
+        method: 'POST'
+    })
+}
 // get封装
 export const get = config => {
     return service({
