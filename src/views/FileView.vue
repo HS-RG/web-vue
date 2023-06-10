@@ -416,9 +416,8 @@ const search = (arg, page) => {
         }
     }).then(res => {
         tableData.value=[];
-        //  let len=res.length;
-        let len=res.data.total;
-        let i=0;
+
+        let len=res.data.rows.length;
         console.log(len);
         nextTick(() => {
             let usertype=[]
@@ -437,8 +436,7 @@ const search = (arg, page) => {
             console.log(tableData);
             console.log(tableData.value);
         });
-        total.value = res.data[len].total;
-
+        total.value = res.data.total;
 
     }).catch(error=>{
         console.error(error);
