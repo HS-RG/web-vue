@@ -192,9 +192,9 @@ export default {
 
     methods: {
         logout(){
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token');
-            this.$router.push('/login');
+            localStorage.removeItem('login');
+            sessionStorage.removeItem('login');
+            this.$router.push('/');
         }
     },
 
@@ -217,7 +217,7 @@ import {
     removeUser,
     updateUser,
     queryAdminById,
-    updateOneUser, createComment, getOneFile, deleteOneComment
+    updateOneUser, createComment, getOneFile, deleteOneComment, createLike, deleteLike, createKeep, deleteKeep
 } from '@/api/api';
 import {ElMessage,UploadProps,UploadUserFile} from "element-plus";
 
@@ -260,7 +260,7 @@ const sendComment = (cardId) => {
             }
         })
     }
-    searchCommentById(sessionStorage.getItem('fileId'));
+    location.reload();
 };
 const replyComment = (cardId) => {
     selectedCommentId.value = cardId;
@@ -280,13 +280,14 @@ const replyCommentSubmit = () => {
         }
     })
     dialogReplyVisible.value=false
+    location.reload();
 };
 
 const deleteComment = (cardId) => {
     deleteOneComment({
         commentId:cardId
     });
-    searchCommentById(sessionStorage.getItem('fileId'))
+    location.reload();
 };
 //const cardData= ref( null)
 
@@ -303,69 +304,69 @@ const findImageById=(Id)=>{
         console.log(error);
     });
 }
-const findParentNameById=(Id,Type)=>{
-    console.log(Id,Type);
-    if(Type===2){
-        findUserById({userId:Id }
-        ).then(res=>{
-            console.log(res.data);
-         //   ParentName.value=res.data.username||"";
-            ParentName.value="tom"
-            console.log(Image.value);
-            console.log(userName.value);
-            console.log(ParentName.value);
-        }).catch(error=>{
-            console.log(error);
-        });
-    }
-    else ParentName.value="tom"
-
-}
-
-const searchComment=()=>{
-    listAllCommentByParent(
-        {
-            type:1,
-            parentId:sessionStorage.getItem('commentId')
-        }
-    ).then(res=>{
-
-        for(let i=0;i<res.data.length;i++){
-            console.log(commentList.value);
-            nextTick(()=>{
-                findImageById(res.data[i].authorId);
-                nextTick(()=>{
-                    findParentNameById(res.data[i].parentId,res.data[i].commentType);
-                    nextTick(()=>{
-                        commentList[i].value={
-                            commentId: res.data[i].commentId,
-                            image:Image.value                    ,
-                            authorId:res.data[i].authorId,
-                            username: userName.value,
-                            parentId: res.data[i].parentId,
-                            parentName: ParentName.value,
-                            commentType:res.data[i].commentType,
-                            content: res.data[i].context,
-                            time: res.data[i].creatTime
-                        }
-                    });
-                    }
-                )
-
-                }
-            )
-
-            console.log(commentList.value);
-
-        }
-        console.log(commentList.value);
-
-
-    }).catch(error=>{
-
-    });
-
-}
+// const findParentNameById=(Id,Type)=>{
+//     console.log(Id,Type);
+//     if(Type===2){
+//         findUserById({userId:Id }
+//         ).then(res=>{
+//             console.log(res.data);
+//          //   ParentName.value=res.data.username||"";
+//             ParentName.value="tom"
+//             console.log(Image.value);
+//             console.log(userName.value);
+//             console.log(ParentName.value);
+//         }).catch(error=>{
+//             console.log(error);
+//         });
+//     }
+//     else ParentName.value="tom"
+//
+// }
+//
+// const searchComment=()=>{
+//     listAllCommentByParent(
+//         {
+//             type:1,
+//             parentId:sessionStorage.getItem('commentId')
+//         }
+//     ).then(res=>{
+//
+//         for(let i=0;i<res.data.length;i++){
+//             console.log(commentList.value);
+//             nextTick(()=>{
+//                 findImageById(res.data[i].authorId);
+//                 nextTick(()=>{
+//                     findParentNameById(res.data[i].parentId,res.data[i].commentType);
+//                     nextTick(()=>{
+//                         commentList[i].value={
+//                             commentId: res.data[i].commentId,
+//                             image:Image.value                    ,
+//                             authorId:res.data[i].authorId,
+//                             username: userName.value,
+//                             parentId: res.data[i].parentId,
+//                             parentName: ParentName.value,
+//                             commentType:res.data[i].commentType,
+//                             content: res.data[i].context,
+//                             time: res.data[i].createTime
+//                         }
+//                     });
+//                     }
+//                 )
+//
+//                 }
+//             )
+//
+//             console.log(commentList.value);
+//
+//         }
+//         console.log(commentList.value);
+//
+//
+//     }).catch(error=>{
+//
+//     });
+//
+// }
 const searchCommentById = (id) => {
     commentList.value=[]
     listAllCommentByParent({
@@ -389,7 +390,7 @@ const searchCommentById = (id) => {
 
                         ParentName.value = "@" + (res2.data?.username || "");
                         commentList.value[i] = {
-                            commentId: filteredData[i].commentId.toString(),
+                            commentId: filteredData[i].commentId,
                             image: Image.value,
                             authorId: filteredData[i].authorId.toString(),
                             username: userName.value,
@@ -404,7 +405,7 @@ const searchCommentById = (id) => {
                     });
                 } else {
                     commentList.value[i] = {
-                        commentId: filteredData[i].commentId.toString(),
+                        commentId: filteredData[i].commentId,
                         image: Image.value,
                         authorId: filteredData[i].authorId.toString(),
                         username: userName.value,
@@ -473,7 +474,7 @@ const getFile = () => {
 const download = (url,filename) => {
     url=fileUrl.value
     filename=fileName.value
-    fetch(url)
+    fetch(url, { mode: 'no-cors' })
         .then(response => response.blob())
         .then(blob => {
             const link = document.createElement('a');
@@ -493,18 +494,81 @@ const download = (url,filename) => {
 
 const likeClick=()=>{
     likeVisible.value=!likeVisible.value
-
+    createLike({
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        targetType:1,
+        targetId:sessionStorage.getItem('fileId')
+    }).then(
+        res=>{
+            if(res.code===1){
+                ElMessage({
+                    message: "点赞成功",
+                    type: 'success',
+                    duration: 1500,
+                });
+            }
+        }
+    ).catch(error=>{
+        console.log(error);
+    })
 }
 const keepClick=()=>{
     keepVisible.value=!keepVisible.value
+    createKeep({
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        fileId:sessionStorage.getItem('fileId')
+    }).then(
+        res=>{
+            if(res.code===1){
+                ElMessage({
+                    message: "收藏成功",
+                    type: 'success',
+                    duration: 1500,
+                });
+            }
+        }
+    ).catch(error=>{
+        console.log(error);
+    })
 }
 
 const quitLikeClick=()=>{
     likeVisible.value=!likeVisible.value
-
+    deleteLike({
+        targetType:1,
+        targetId:sessionStorage.getItem('fileId')
+    }).then(
+        res=>{
+            if(res.code===1){
+                ElMessage({
+                    message: "取消点赞成功",
+                    type: 'success',
+                    duration: 1500,
+                });
+            }
+        }
+    ).catch(error=>{
+        console.log(error);
+    })
 }
 const quitKeepClick=()=>{
     keepVisible.value=!keepVisible.value
+    deleteKeep({
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        fileId:sessionStorage.getItem('fileId')
+    }).then(
+        res=>{
+            if(res.code===1){
+                ElMessage({
+                    message: "取消收藏成功",
+                    type: 'success',
+                    duration: 1500,
+                });
+            }
+        }
+    ).catch(error=>{
+        console.log(error);
+    })
 }
 </script>
 

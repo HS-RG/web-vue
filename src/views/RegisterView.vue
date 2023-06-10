@@ -1,7 +1,7 @@
 <template>
     <div class="login-body">
-        <div class="title" style="margin-top: 8vh; font-size: 40px; color:#3366FF;  text-shadow: 0 8px 10px #6699FF;  font-weight: bolder;  text-align: center">华师热狗</div>
-        <div class="login-container" style="margin-top: -10vh">
+        <div class="title" style="margin-top: 3vh; font-size: 40px; color:#3366FF;  text-shadow: 0 8px 10px #6699FF;  font-weight: bolder;  text-align: center">华师热狗</div>
+        <div class="login-container" style="margin-top: 2vh">
             <div class="head">
                 <img class="logo" src="../assets/用户.png" width="64" height="64" />
                 <div class="name">

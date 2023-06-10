@@ -310,7 +310,7 @@ const upManage = () => {
     }).then(res => {
         dialogUserTypeVisible.value = false;
         const login = JSON.parse(sessionStorage.getItem('login') || '{}');
-        if(res.success===true){
+        if(res.code===1){
             search('',currentPage.value)
             ElMessage({
                 message: '设置成功',

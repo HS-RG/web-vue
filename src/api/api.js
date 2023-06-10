@@ -37,7 +37,7 @@ export const searchUser = data => {
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
 
     })
@@ -48,18 +48,41 @@ return post2({
     data,
     headers:{
         'Content-Type': 'application/json',
-        'Authorization': login.token
+        'Authorization': JSON.parse(sessionStorage.getItem('login')).token
     }
 
 })
 }
+export const createKeep = data => {
+    return post2({
+        url: '/user/createCollection',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+
+    })
+}
+export const deleteKeep = data => {
+    return post2({
+        url: '/user/deleteCollection',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+
+    })
+}
+
 export const queryAdminById = data => {
     return post({
         url: '/auth/queryIsAdmin',
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
 
     })
@@ -70,7 +93,7 @@ export const updateOneUser = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
 
     })
@@ -81,7 +104,7 @@ export const setUserType = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -91,7 +114,7 @@ export const uploadFile = data => {
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -102,7 +125,7 @@ export const getOneFile = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -112,7 +135,7 @@ export const DeleteOneFile = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -122,7 +145,7 @@ export const DeleteOneUser = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -133,7 +156,7 @@ export const getMyDetail = data => {
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -144,7 +167,7 @@ export const QueryFileList = data => {
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -154,7 +177,7 @@ export const listAllCommentByParent = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -164,7 +187,39 @@ export const listCommentByParent = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+    })
+}
+
+export const countLikeByTarget = data => {
+    return post4({
+        url: '/like/countLikeByTarget',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+    })
+}
+export const createLike = data => {
+    return post4({
+        url: 'like/createLike',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+    })
+}
+
+export const deleteLike = data => {
+    return post4({
+        url: 'like/deleteSelfLike',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -174,7 +229,7 @@ export const createComment = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }
@@ -184,7 +239,7 @@ export const deleteOneComment = data => {
         data,
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': login.token
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
         }
     })
 }

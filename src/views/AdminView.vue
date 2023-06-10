@@ -136,9 +136,7 @@ export default {
 
     methods: {
         logout() {
-            console.log(sessionStorage.getItem('login'));
             sessionStorage.removeItem('login');
-            console.log(sessionStorage.getItem('login'));
             this.$router.push('/login');
         },
 
