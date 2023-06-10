@@ -10,6 +10,27 @@ const routes = [
     component: LoginView
   },
   {
+    path:'/myinfo',
+    name:'myinfo',
+    component: () =>import('../views/MyInfoView.vue'),
+    children: [
+      {
+        path:'/myinfo',
+        name:'myinfo',
+        component: () =>import('../views/MyInfoView.vue'),
+      },{
+        path:'/homepage',
+        name:'homepage',
+        component: () =>import('../views/HomepageView.vue')
+      }
+    ]
+  },
+  {
+    path:'/homepage',
+    name:'homepage',
+    component: () =>import('../views/HomepageView.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     component: () =>import('../views/RegisterView.vue')

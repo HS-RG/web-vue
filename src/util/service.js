@@ -83,7 +83,40 @@ const service5 = axios.create({
         },
     ],
 })
-
+//配置文件上传的代理接口
+const service6 = axios.create({
+    baseURL:'/upfile'
+    ,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    transformResponse: [
+        data => {
+            try {
+                return jsonBig.parse(data);
+            } catch (err) {
+                return data;
+            }
+        },
+    ],
+})
+//  拦截请求，载入加载动画
+service6.interceptors.request.use(config => {
+    return config
+})
+// 对每个响应进行预处理
+service6.interceptors.response.use(response => {
+    return response.data
+})
+// post封装
+export const post6 = config => {
+    return service6({
+        ...config,
+        data: config.data,
+        method: 'POST'
+    })
+}
+//END
 //  拦截请求，载入加载动画
 service.interceptors.request.use(config => {
      return config

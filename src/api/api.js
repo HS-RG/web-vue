@@ -1,5 +1,5 @@
-import {post, get, post2,post3,post4,post5} from '@/util/service'
-
+import {post, get, post2,post3,post4,post5,post6} from '@/util/service'
+import { login as slogin} from '@/api/api'
 
 export const login = data => {
     return post({
@@ -108,17 +108,26 @@ export const setUserType = data => {
         }
     })
 }
-export const uploadFile = data => {
-    return post3({
+export const uploadFile = (data,header) => {
+    console.log('uploadFile',data)
+    return post({
         url: '/file/uploadFile',
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+            'Authorization': header.Authorization
         }
+
     })
 }
-
+//上传图片
+export const uploadImg = data => {
+    return post3({
+        url: '/file/uploadImage',
+        data:data.data,
+        headers:data.header
+    })
+}
 export const getOneFile = data => {
     return post3({
         url: '/file/QueryFileByFileId',
@@ -151,13 +160,11 @@ export const DeleteOneUser = data => {
 }
 
 export const getMyDetail = data => {
+    console.log(data,'ssssssss')
     return post2({
         url: '/user/getMyDetail',
-        data,
-        headers:{
-            'Content-Type': 'multipart/form-data',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        }
+        data:null,
+        headers:data.header
     })
 }
 
