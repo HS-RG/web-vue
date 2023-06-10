@@ -594,7 +594,7 @@ const quitKeepClick=()=>{
 }
 
 .image {
-
+    border-radius:50%;
     display: block;
 }
 </style>
