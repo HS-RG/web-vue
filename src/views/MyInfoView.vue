@@ -68,7 +68,7 @@
           <template #header>
             <div class="card-header">
               <span>个人简介</span>
-              <el-button class="icon" type="primary" :icon="Star" @click="handleSearch1= true">收藏夹</el-button>
+              <el-button type="primary" :icon="Star" @click="handleSearch1= true">收藏夹</el-button>
               <el-dialog
                   v-model="handleSearch1"
                   title="我收藏的资源"
@@ -599,7 +599,7 @@ searchKeep()
 .common-aside {
   background-color: rgb(34, 40, 50);
   width: 200px;
-  height: 1500px;
+  height: 1022px;
 }
 .img {
   margin-left: 80px;
@@ -607,12 +607,6 @@ searchKeep()
   height: 100px;
   margin-right: 20px;
 }
-.icon {
-  margin-left: 550px;
-  margin-right: 20px;
-  margin-top: -10px;
-}
-
 .el-container{
 
 }
@@ -622,6 +616,7 @@ searchKeep()
   justify-content: space-between;
   align-items: center;
   height: 30px;
+  width: auto;
 }
 
 
@@ -663,7 +658,7 @@ searchKeep()
 .common-aside {
   background-color: rgb(34, 40, 50);
   width: 200px;
-  height: 1300px;
+  height: 1404px;
 }
 .dialog-footer button:first-child {
   margin-right: 10px;
@@ -680,7 +675,7 @@ searchKeep()
 .background-img{
   background-image: url("../../public/assets/img_1.png");
   background-size: cover;
-  height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
+  height: 100%; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
 }
 .Touxiang{
     margin-left: 28vw;

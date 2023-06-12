@@ -83,7 +83,7 @@
             :http-request="uploadFileWrapper"
         >
           <template #trigger>
-            <el-button class="select" type="primary">select file</el-button>
+            <el-button class="select" type="primary">选择文件</el-button>
           </template>
           <!--          <el-button class="toserver" type="success" @click="submitUpload">-->
           <!--            upload to server-->
@@ -94,20 +94,15 @@
             </div>
           </template>
         </el-upload>
-        <el-button class="submit" type="primary" @click="submitUpload">Submit</el-button>
-        <el-button @click="Cancel" >Cancel</el-button>
+        <el-button class="submit" type="primary" @click="submitUpload">提交</el-button>
+<!--        <el-button class="cancel" @click="Cancel" >取消</el-button>-->
       </el-dialog>
       <el-card  style="margin-top: 200px; height: 700px" shadow="always" >
 
         <div class="card-header" style="display: flex; justify-content: flex-end; align-items: center;">
-          <el-button class="el-button" type="primary" :icon="Plus"  @click="upload = true">上传</el-button>
-<!--          <el-input v-model="arg" style="width: 500px;" placeholder="请输入关键字搜索"><template #append>-->
-<!--            <el-button type="primary" @click="handleSearch"><el-icon>-->
-<!--              <Search />-->
-<!--            </el-icon>搜索</el-button>-->
-<!--          </template></el-input>&nbsp;&nbsp;&nbsp;-->
-
-
+          <el-button class="el-button" style="width: 100px;margin-right: auto" type="primary" :icon="Plus"  @click="upload = true">上传</el-button>
+          <el-input v-model="arg" style="width: 150px;margin-right: 10px" placeholder="输入关键字"></el-input>
+          <el-button  type="primary" style="margin-right: 0px" @click="handleSearch"><el-icon><Search/></el-icon></el-button>
         </div>
         <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" @selection-change="handleSelectionChange">
           <!--      <el-table-column type="selection" />-->
@@ -431,7 +426,7 @@ watch(currentPage, (newValue) => {
 .common-aside {
   background-color: rgb(34, 40, 50);
   width: 200px;
-  height: 1300px;
+  height: 1022px;
 }
 .infinite-list {
   height: 900px;
@@ -451,32 +446,37 @@ watch(currentPage, (newValue) => {
   color: var(--el-color-primary);
 }
 .el-button{
-  margin-right: 1250px;
+  margin-right: 600px;
   size: A5;
 }
 
 .submit{
-  margin-left: 120px;
+  display:block;
+  margin: 35px auto 0;
 }
 
 .el-upload__tip{
-  margin-left: 280px;
-  margin-top: -25px;
+  margin-left: 119px;
+  margin-top: -50px;
 
 }
 .select{
-  margin-left: 20px;
+  margin-left: 119px;
 }
 .fuck{
   margin-top: 10px;
   justify-content: center;
-  margin-left: 65px;
+  margin-left: 130px;
 
+}
+.cancel{
+  margin-top: 10px;
+  margin-left: 20px;
 }
 .background-img{
   background-image: url("../../public/assets/img.png");
   background-size: cover;
-  height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
+  height: 100%; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
 }
 .Touxiang{
     margin-left: 28vw;
@@ -490,6 +490,13 @@ watch(currentPage, (newValue) => {
     box-shadow: 0 0 0 2px black;
 
     /*设为圆形*/
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  width: 100%;
 }
 </style>
 

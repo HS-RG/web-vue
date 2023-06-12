@@ -169,7 +169,7 @@ import { ArrowRight } from '@element-plus/icons-vue'
 import { computed, onMounted, ref, nextTick, watch } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import * as echarts from 'echarts'
-co
+
 import {
 
     searchUser,
