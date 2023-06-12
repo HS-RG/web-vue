@@ -1,23 +1,25 @@
 <template>
+  <div class="background-img">
+    <div class="common-layout" >
   <el-backtop :right="100" :bottom="100" />
-  <el-menu
-      mode="horizontal"
-      class="el-menu-demo"
-  >
-    <el-menu-item index="1" disabled>
-      <router-link to="/" >欢迎来到ecnu</router-link>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/myinfo">个人设置</router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/homepage">主页</router-link>
-    </el-menu-item>
-  </el-menu>
-  <el-container>
 
-    <el-header>欢迎来到ECNU
-      <el-button class="el-button" type="primary" :icon="Plus"  @click="upload = true">上传</el-button>
+  <el-container>
+    <el-aside width="200px" class="common-aside">
+      <el-menu background-color="none" text-color="#fff" :router="true">
+        <el-menu-item index="/"> <el-icon>
+          <ArrowLeft />
+        </el-icon> 返回</el-menu-item>
+        <el-menu-item index="/homepage"> <el-icon>
+          <House />
+        </el-icon> 主页</el-menu-item>
+        <el-menu-item index="/myinfo"> <el-icon>
+          <Setting />
+        </el-icon> 个人设置</el-menu-item>
+      </el-menu>
+    </el-aside>
+
+    <el-main>
+
       <dialog-component v-if="Visiable" ref="dialog"></dialog-component>
       <el-dialog
           v-model="upload"
@@ -26,50 +28,50 @@
           :before-close="handleClose"
       >
 
-          <el-form :model="form" label-width="120px">
-            <el-col :span="8">
+        <el-form :model="form" label-width="120px">
+          <el-col :span="8">
             <el-form-item label="标题" ><el-input v-model="form.title" /></el-form-item>
-            </el-col>
-            <el-col :span="8">
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="上传者姓名"><el-input v-model="form.name" /></el-form-item>
+          </el-col>
+          <el-form-item label="Activity time">
+            <el-col :span="10">
+              <!--                <el-date-picker-->
+              <!--                    v-model="form.date1"-->
+              <!--                    type="date"-->
+              <!--                    placeholder="Pick a date"-->
+              <!--                    style="width: 100%"-->
+              <!--                />-->
+              <el-date-picker
+                  v-model="form.date1"
+                  type="year"
+                  placeholder="选择年">
+              </el-date-picker>
             </el-col>
-            <el-form-item label="Activity time">
-              <el-col :span="10">
-<!--                <el-date-picker-->
-<!--                    v-model="form.date1"-->
-<!--                    type="date"-->
-<!--                    placeholder="Pick a date"-->
-<!--                    style="width: 100%"-->
-<!--                />-->
-                <el-date-picker
-                    v-model="form.date1"
-                    type="year"
-                    placeholder="选择年">
-                </el-date-picker>
-              </el-col>
-            </el-form-item>
-              <el-form-item label="课程标签">
-                <el-radio-group v-model="form.course">
-                  <el-radio label="数据库" />
-                  <el-radio label="操作系统" />
-                  <el-radio label="密码学" />
-                  <el-radio label="其它" />
-                </el-radio-group>
-              </el-form-item>
-            <el-form-item label="资源类型">
-              <el-radio-group v-model="form.type">
-                <el-radio label="试卷" />
-                <el-radio label="试卷答案" />
-                <el-radio label="课本答案" />
-                <el-radio label="其它" />
-              </el-radio-group>
-            </el-form-item>
-            <el-col :span="20">
+          </el-form-item>
+          <el-form-item label="课程标签">
+            <el-radio-group v-model="form.course">
+              <el-radio label="数据库" />
+              <el-radio label="操作系统" />
+              <el-radio label="密码学" />
+              <el-radio label="其它" />
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="资源类型">
+            <el-radio-group v-model="form.type">
+              <el-radio label="试卷" />
+              <el-radio label="试卷答案" />
+              <el-radio label="课本答案" />
+              <el-radio label="其它" />
+            </el-radio-group>
+          </el-form-item>
+          <el-col :span="20">
             <el-form-item label="对于资源的描述">
               <el-input v-model="form.desc" type="textarea" />
             </el-form-item>
-            </el-col>
-          </el-form>
+          </el-col>
+        </el-form>
         <el-upload
             ref="uploadRef"
             class="upload-demo"
@@ -80,9 +82,9 @@
           <template #trigger>
             <el-button class="select" type="primary">select file</el-button>
           </template>
-<!--          <el-button class="toserver" type="success" @click="submitUpload">-->
-<!--            upload to server-->
-<!--          </el-button>-->
+          <!--          <el-button class="toserver" type="success" @click="submitUpload">-->
+          <!--            upload to server-->
+          <!--          </el-button>-->
           <template #tip>
             <div class="el-upload__tip">
               jpg/png files with a size less than 500kb
@@ -92,21 +94,10 @@
         <el-button class="submit" type="primary" @click="submitUpload">Submit</el-button>
         <el-button>Cancel</el-button>
       </el-dialog>
-    </el-header>
-    <el-aside>
-      <el-button class="search1" v-model="arg"  type="primary" @click="handleSearch">2018</el-button>
-      <el-button class="search2" v-model="arg"  type="primary" @click="handleSearch">数据库</el-button>
-    </el-aside>
-    <el-main>
+      <el-card  style="margin-top: 200px; height: 700px" shadow="always" >
 
-      <el-card  shadow="always" >
-
-        <!-- <div style="display:flex; justify-content: flex-end; align-items: center;margin-bottom: 20px;">-->
-
-        <!--      <el-input placeholder="请输入搜索关键字" v-model="arg" style="width: 300px" class="search-box"></el-input>-->
-        <!--      <el-button type="primary" style="margin-left: 10px;" @click="handleSearch">搜索</el-button>-->
-        <!--    </div>-->
         <div class="card-header" style="display: flex; justify-content: flex-end; align-items: center;">
+          <el-button class="el-button" type="primary" :icon="Plus"  @click="upload = true">上传</el-button>
           <el-input v-model="arg" style="width: 500px;" placeholder="请输入关键字搜索"><template #append>
             <el-button type="primary" @click="handleSearch"><el-icon>
               <Search />
@@ -117,7 +108,7 @@
         </div>
         <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" @selection-change="handleSelectionChange">
           <!--      <el-table-column type="selection" />-->
-          <el-table-column prop="id" label="ID" min-width="60px"></el-table-column>
+          <el-table-column prop="id" label="ID" min-width="60px" ></el-table-column>
           <el-table-column prop="filename" min-width="70px" label="文件名"></el-table-column>
           <el-table-column prop="title" min-width="35px" label="标题"></el-table-column>
           <el-table-column prop="year" min-width="20px" label="年份"></el-table-column>
@@ -125,15 +116,7 @@
           <el-table-column prop="time" label="上传时间" min-width="50px"></el-table-column>
           <el-table-column label="操作" align="center">
             <template v-slot="scope">
-              <el-button
-                  type="primary"
-                  v-model="scope.row.id"
-                  @click="handleClickUserType(scope.row)"
-              >
-                <el-icon>
-                  <View />跳转
-                </el-icon>
-              </el-button>
+
               <el-button
                   class="fuck"
                   type="primary"
@@ -229,11 +212,13 @@
     </el-main>
 
 </el-container>
+    </div>
+  </div>
 </template>
 <script setup>
 import {ref, onMounted, nextTick, watch} from 'vue'
 import { useRouter } from 'vue-router';
-import { View,Star,UserFilled,Plus } from '@element-plus/icons-vue'
+import { View,ArrowLeft,House,Setting,Plus } from '@element-plus/icons-vue'
 import { reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {findUserById, getMyDetail, login, QueryFileList, uploadFile} from '@/api/api'
@@ -259,7 +244,7 @@ const handleClickUserType = (data) => {
   // userData.value['id']=data.id
   // dialogUserTypeVisible.value=true
   sessionStorage.setItem('fileId',data.id)
-  router.push("/resource")
+  router.push("/userresource")
 }
 const search = (arg, page) => {
   console.log("arg:"+arg);
@@ -406,6 +391,11 @@ watch(currentPage, (newValue) => {
 
 </script>
 <style>
+.common-aside {
+  background-color: rgb(34, 40, 50);
+  width: 200px;
+  height: 1300px;
+}
 .infinite-list {
   height: 900px;
   padding: 0;
@@ -424,8 +414,8 @@ watch(currentPage, (newValue) => {
   color: var(--el-color-primary);
 }
 .el-button{
-  margin-left: 1300px;
-  margin-top: 30px;
+  margin-right: 1250px;
+  size: A5;
 }
 
 .submit{
@@ -441,18 +431,15 @@ watch(currentPage, (newValue) => {
   margin-left: 20px;
 }
 .fuck{
-  margin-top: -50px;
+  margin-top: 10px;
+  justify-content: center;
+  margin-left: 65px;
 
 }
-.cell-item {
-  display: flex;
-  align-items: center;
-}
-.search1{
-  margin-left: 5px;
-}
-.search2{
-  margin-left: 5px;
+.background-img{
+  background-image: url("../../public/assets/img.png");
+  background-size: cover;
+  height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
 }
 </style>
 

@@ -1,27 +1,22 @@
 <template>
   <el-backtop :right="100" :bottom="100" />
-  <el-menu
-      mode="horizontal"
-      class="el-menu-demo"
-  >
-    <el-menu-item index="1" disabled>
-      <router-link to="/" >欢迎来到ecnu</router-link>
-      </el-menu-item>
-    <el-menu-item index="2">
-      <router-link to="/myinfo">个人设置</router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link to="/homepage">主页</router-link>
-    </el-menu-item>
-  </el-menu>
-  <div>
+
+  <div class="background-img">
     <el-container>
-      <el-aside class="el-aside">
+      <el-aside width="200px" class="common-aside">
+        <el-menu background-color="none" text-color="#fff" :router="true">
+          <el-menu-item index="/homepage"> <el-icon>
+            <House />
+          </el-icon> 主页</el-menu-item>
+          <el-menu-item index="/myinfo"> <el-icon>
+            <Setting />
+          </el-icon> 个人设置</el-menu-item>
+        </el-menu>
       </el-aside>
     <el-container class="el-container">
 
       <el-main class="el-main">
-        <el-avatar class="img" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" size="large"/>
+        <el-avatar class="img" :src="avaurl" size="large"/>
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
@@ -34,7 +29,7 @@
                   :before-close="handleClose"
               >
 
-                <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" @selection-change="handleSelectionChange">
+                <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" >
                   <!--      <el-table-column type="selection" />-->
                   <el-table-column prop="id" label="ID" min-width="60px"></el-table-column>
                   <el-table-column prop="filename" min-width="70px" label="文件名"></el-table-column>
@@ -66,16 +61,15 @@
                   </el-table-column>
                 </el-table>
                 <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="handleSearch = false">Cancel</el-button>
-        <el-button type="primary" @click="handleSearch = true">Confirm</el-button>
-      </span>
                 </template>
               </el-dialog>
             </div>
           </template>
-          <text>昵称：{{name}}</text>
-
+          <el-icon>
+            <User/>
+          </el-icon>
+          <text style="margin-left: 7px; margin-top: -2px">昵称：{{name}}</text>
+          <el-divider></el-divider>
           <el-upload
               ref="uploadRef"
               class="upload-demo"
@@ -88,12 +82,13 @@
               <el-button class="select" type="primary">选择本地头像</el-button>
             </template>
 
-            <el-button class="toserver" type="success" @click="submitUpload">
+             <el-button class="toserver" type="success" @click="submitUpload">
               上传
             </el-button>
+            <el-divider></el-divider>
 
             <template #tip>
-              <div class="el-upload__tip">
+              <div style="margin-left: 5px;margin-top: 5px; size:A4 ">
                 jpg/png files with a size less than 500kb
               </div>
             </template>
@@ -107,7 +102,7 @@
             </div>
           </template>
           <div>
-            <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;">
               <!--      <el-table-column type="selection" />-->
               <el-table-column prop="id" label="ID" min-width="60px"></el-table-column>
               <el-table-column prop="filename" min-width="70px" label="文件名"></el-table-column>
@@ -154,7 +149,7 @@
 
 <script  setup>
 import {ref, onMounted, nextTick} from 'vue'
-import { Star,UserFilled,More } from '@element-plus/icons-vue'
+import { User,Star,UserFilled,More } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -165,7 +160,7 @@ const router = useRouter()
 const count = ref(0)
 const store = useStore()
 import { ElMessageBox } from 'element-plus'
-import {getMyDetail, login, QueryFileList, uploadFile, uploadImg} from "@/api/api";
+import {getcollectfiles, getMyDetail, getMyfiles, login, QueryFileList, uploadFile, uploadImg} from "@/api/api";
 const tableData = ref([])
 const currentPage = ref(1)
 const total = ref(0)
@@ -178,18 +173,148 @@ const handleClickUserType = (data) => {
   sessionStorage.setItem('fileId',data.id)
   router.push("/resource")
 }
-const search = (arg, page) => {
-  console.log("arg:"+arg);
-  const login = store.getters.isLogIn;
-  if (!login.isLogIn) {
-    router.push('/adminLogin')
-  }
-  QueryFileList({
-    yearTag:-1 ,
-    courseTag: "",
-    typeTag: "",
-    searchString:arg,
-    pageSize:5,
+// const search = (arg, page) => {
+//   console.log("arg:"+arg);
+//   const login = store.getters.isLogIn;
+//   if (!login.isLogIn) {
+//     router.push('/adminLogin')
+//   }
+//   getMyfiles({
+//     pageNum:currentPage.value},{
+//     params:{
+//       yearTag: -1,
+//       courseTag: "",
+//       typeTag: "",
+//       searchString:arg,
+//       pageSize:5,
+//       pageNum:currentPage.value
+//     },
+//     headers: {
+//       Authorization: login.token
+//     }
+//   }).then(res => {
+//     tableData.value=[];
+//     let len=res.data.rows.length;
+//     console.log(len);
+//     nextTick(() => {
+//       let usertype=[]
+//       for (let i = 0; i < len; i++) {
+//
+//         tableData.value[i] = {
+//           id: res.data.rows[i].fileId,
+//           filename: res.data.rows[i].filename,
+//           year:res.data.rows[i].yearTag,
+//           time: res.data.rows[i].createTime,
+//           title:res.data.rows[i].title,
+//           course: res.data.rows[i].courseTag
+//         };
+//       }
+//
+//       console.log(tableData);
+//       console.log(tableData.value);
+//     });
+//     total.value = res.data.total;
+//
+//
+//   }).catch(error=>{
+//     console.error(error);
+//   });
+// }
+const handleSearch = () => {
+  // console.log("outside", search('user'))
+
+  search(arg.value, 1)
+
+}
+
+// const handlePageChange = (newPage) => {
+//   currentPage.value = newPage
+// }
+//
+// const handleSelectionChange = (val) => {
+//   // console.log(val[0].id)
+//   multipleSelection.value = []
+//   val.forEach(elem => {
+//     multipleSelection.value.push(elem.id)
+//   })
+//   // console.log(multipleSelection)
+// }
+//
+// const load = () => {
+//   count.value += 2
+// }
+//
+//
+// const handlechange=()=> {
+// }
+
+let fileUpload = ref()
+// 设置请求头
+const headers = {
+  // 'Content-Type': 'multipart/form-data'
+}
+
+// 选择文件时被调用，将他赋值给fileUpload
+const handleChange = (file) => {
+  fileUpload.value = file
+}
+
+const submitUpload=(res)=> {
+  console.log(fileUpload.value,'ssubmitUpload')
+  const formData = new FormData()
+  formData.append('image', fileUpload.value.raw)
+  // console.log(formData,"formData",fileUpload.value)
+  uploadImg({
+    data:formData,
+    header:{
+      'Content-Type': 'multipart/form-data',
+      Authorization: store.state.userInfo.token
+    }
+  })
+}
+
+const name=ref(store.state.userInfo.data.username)
+onMounted(() => {
+  console.log(store.state.userInfo,"store")
+  getMyfiles({
+    pageNum:currentPage.value},{
+    params:{
+      yearTag: -1,
+      courseTag: "",
+      typeTag: "",
+      searchString:arg,
+      pageSize:5,
+      pageNum:currentPage.value
+    },
+    headers: {
+      Authorization: login.token
+    }
+  }).then(res => {
+    tableData.value=[];
+    let len=res.data.rows.length;
+    console.log(len);
+    nextTick(() => {
+      let usertype=[]
+      for (let i = 0; i < len; i++) {
+
+        tableData.value[i] = {
+          id: res.data.rows[i].fileId,
+          filename: res.data.rows[i].filename,
+          year:res.data.rows[i].yearTag,
+          time: res.data.rows[i].createTime,
+          title:res.data.rows[i].title,
+          course: res.data.rows[i].courseTag
+        };
+      }
+
+      console.log(tableData);
+      console.log(tableData.value);
+    });
+    total.value = res.data.total;
+  }).catch(error=>{
+    console.error(error);
+  });
+  getcollectfiles({
     pageNum:currentPage.value},{
     params:{
       yearTag: -1,
@@ -229,67 +354,8 @@ const search = (arg, page) => {
   }).catch(error=>{
     console.error(error);
   });
-}
-const handleSearch = () => {
-  // console.log("outside", search('user'))
-
-  search(arg.value, 1)
-
-}
-
-const handlePageChange = (newPage) => {
-  currentPage.value = newPage
-}
-
-const handleSelectionChange = (val) => {
-  // console.log(val[0].id)
-  multipleSelection.value = []
-  val.forEach(elem => {
-    multipleSelection.value.push(elem.id)
-  })
-  // console.log(multipleSelection)
-}
-
-const load = () => {
-  count.value += 2
-}
-
-
-const handlechange=()=> {
-}
-
-let fileUpload = ref()
-// 设置请求头
-const headers = {
-  // 'Content-Type': 'multipart/form-data'
-}
-
-// 选择文件时被调用，将他赋值给fileUpload
-const handleChange = (file) => {
-  fileUpload.value = file
-}
-
-const submitUpload=(res)=> {
-  console.log(fileUpload.value,'ssubmitUpload')
-  const formData = new FormData()
-  formData.append('image', fileUpload.value.raw)
-  // console.log(formData,"formData",fileUpload.value)
-  uploadImg({
-    data:formData,
-    header:{
-      'Content-Type': 'multipart/form-data',
-      Authorization: store.state.userInfo.token
-    }
-  })
-}
-
-const name=ref(store.state.userInfo.data.username)
-onMounted(() => {
-  console.log(store.state.userInfo,"store")
   getMyDetail({
     header:{
-
-
       Authorization: store.state.userInfo.token
     }
   }).then(res=>{
@@ -308,7 +374,11 @@ onMounted(() => {
   align-items: center;
   padding: 40px 0 20px 0;
 }
-
+.common-aside {
+  background-color: rgb(34, 40, 50);
+  width: 200px;
+  height: 1500px;
+}
 .img {
   margin-left: 80px;
   width: 100px;
@@ -324,38 +394,7 @@ onMounted(() => {
 .el-container{
 
 }
-.el-header{
-  width: 1850px;
-  height:100px;
-  background-color: #a2ec9e;
-}
-.el-aside{
-  width: 80px;
-  height: 1200px;
-  background-color: #56aae2;
-}
 
-.input1{
-  margin-left: 50px;
-  width:250px;
-  height: 40px;
-  margin-top: 40px;
-
-
-
-}
-.input2{
-  margin-left: -250px;
-  width:500px;
-  height: 50px;
-  margin-top: 80px;
-
-}
-.line{
-  border-color: #6699FF;
-  width: 80px;
-  height: 80px;
-}
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -367,7 +406,7 @@ onMounted(() => {
 .box-card {
   width: 850px;
   margin-left: 200px;
-  height: 300px;
+  height: 330px;
   margin-top: 10px;
 
 }
@@ -399,7 +438,11 @@ onMounted(() => {
   margin-top: 10px;
 
 }
-
+.common-aside {
+  background-color: rgb(34, 40, 50);
+  width: 200px;
+  height: 1300px;
+}
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
@@ -408,9 +451,16 @@ onMounted(() => {
 
 }
 .toserver{
-  margin-top: 5px;
-  margin-left: 10px;
+  margin-top: 0px;
+  margin-left: 12px;
 }
+
+.background-img{
+  background-image: url("../../public/assets/img_1.png");
+  background-size: cover;
+  height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
+}
+
 </style>
 
 
