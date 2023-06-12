@@ -116,10 +116,10 @@
                     label-width="70px"
             >
                 <el-form-item label="旧密码" prop="oldPassword">
-                    <el-input v-model="editPassword.oldPassword" autocomplete="off" disabled></el-input>
+                    <el-input v-model="editPassword.oldPassword" autocomplete="off" show-password disabled></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="newPassword">
-                    <el-input v-model="editPassword.newPassword" autocomplete="off"></el-input>
+                    <el-input v-model="editPassword.newPassword" autocomplete="off" show-password></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleUpdatePasswordSubmit">提交</el-button>
@@ -234,63 +234,30 @@ watch(currentPage, (newValue) => {
 })
 
 const handleUpdateSubmit = () => {
-    if(editData.value.name === editData.value.nameBackup) {
+    if (editData.value.name === editData.value.nameBackup) {
         dialogVisible.value = false;
         return;
     }
 
     const login = store.getters.isLogIn;
 
-    if(!login.isLogIn) {
-        router.push('/adminLogin')
+    if (!login.isLogIn) {
+        router.push('/login')
     }
     console.log(editData.value.name)
     updateUser({
-        token: login.token,
-
-        newUsername: editData.value.name
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        nickname: editData.value.name
     }).then(res => {
         dialogVisible.value = false;
         console.log(res);
-        if(res.success===true){
-            const login = JSON.parse(sessionStorage.getItem('login') || '{}');
-            login.data.username = editData.value.name;
-            sessionStorage.setItem('login', JSON.stringify(login));
-            sessionStorage.setItem('login',JSON.stringify(login))
-            wellCome.value=editData.value.name;
-
-            search('',currentPage.value)
-        }
-
-    })
-}
-
-const handleUpdatePasswordSubmit = () => {
-    if(editPassword.value.oldPassword === editPassword.value.newPassword) {
-        dialogPasswordVisible.value = false;
-        return;
-    }
-
-    const login = store.getters.isLogIn;
-
-    if(!login.isLogIn) {
-        router.push('/adminLogin')
-    }
-    console.log(editData.value.name)
-    changePassword({
-        token: login.token,
-        oldPassword:editPassword.value.oldPassword,
-        newPassword: editPassword.value.newPassword
-    }).then(res => {
-        dialogPasswordVisible.value = false;
-        const login = JSON.parse(sessionStorage.getItem('login') || '{}');
-        if(res.success===true){
-            login.data.password = editPassword.value.newPassword;
-            sessionStorage.setItem('login', JSON.stringify(login));
+        if(res.code===1){
             ElMessage({
-                message: '修改成功',
+                message: "修改成功",
                 type: 'success',
-            })
+                duration: 1500,
+            });
+            search('',currentPage.value)
         }
 
     })
@@ -358,12 +325,45 @@ const handleUpdateReset = () => {
     editData.value['name'] = editData.value['nameBackup']
 
 }
+const handleUpdatePasswordSubmit = () => {
+    if (editPassword.value.oldPassword === editPassword.value.newPassword) {
+        dialogPasswordVisible.value = false;
+        return;
+    }
 
-const handleClickEdit = (data) => {
     const login = store.getters.isLogIn;
-    editData.value['id']=JSON.parse(sessionStorage.getItem('login')).id
-    editData.value['name'] =  JSON.parse(sessionStorage.getItem('login')).data.username
-    editData.value['nameBackup'] =  JSON.parse(sessionStorage.getItem('login')).data.username
+
+    if (!login.isLogIn) {
+        router.push('/login')
+    }
+    console.log(editData.value.name)
+    changePassword({
+        password: editPassword.value.newPassword
+    }).then(res => {
+        dialogPasswordVisible.value = false;
+        const login = JSON.parse(sessionStorage.getItem('login') || '{}');
+        if (res.code===1) {
+            login.data.password = editPassword.value.newPassword;
+            sessionStorage.setItem('login', JSON.stringify(login));
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+        }
+
+    })
+}
+const Image=ref('')
+const handleClickEdit = (data) => {
+
+    const login = store.getters.isLogIn;
+    findUserById({userId:store.getters.isLogIn.id}
+    ).then(res => {
+        Image.value=res.data.imageUrl;
+        editData.value['id'] = store.getters.isLogIn.id,
+            editData.value['name'] = res.data.nickname,
+            editData.value['nameBackup'] = res.data.nickname
+    })
     console.log(editData.value)
     dialogVisible.value = true
 }
@@ -378,6 +378,13 @@ const handleChangePassword = (data) => {
     // console.log(editData.value)
     dialogPasswordVisible.value = true
 }
+
+
+
+
+
+
+
 
 const handleDelete = (data) => {
     const login = store.getters.isLogIn;

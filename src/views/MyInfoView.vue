@@ -157,7 +157,7 @@ import {ref, onMounted, nextTick} from 'vue'
 import { Star,UserFilled,More } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import jwt_decode from "jwt-decode";
+
 const input1 = ref('')
 const input2 = ref('')
 const router = useRouter()

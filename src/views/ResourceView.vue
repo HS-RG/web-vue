@@ -14,8 +14,8 @@
                             </div>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item >修改用户名</el-dropdown-item>
-                                    <el-dropdown-item >修改密码</el-dropdown-item>
+                                    <el-dropdown-item @click="handleClickEdit" >修改昵称</el-dropdown-item>
+                                    <el-dropdown-item @click="handleChangePassword">修改密码</el-dropdown-item>
                                     <el-dropdown-item @click="logout">退出</el-dropdown-item>
 
                                 </el-dropdown-menu>
@@ -23,24 +23,34 @@
                         </el-dropdown>
                     </div>
                 </el-header>
-                <el-dialog
-                    v-model="dialogVisible"
-                    title="更改用户名"
-                    width="30%"
-                    center
-                >
-                    <el-form
-                        status-icon
-                        label-width="70px"
-                    >
+                <el-dialog v-model="dialogVisible" title="更改用户信息" width="30%" center>
+                    <el-form ref="editDataForm" :model="editData" status-icon label-width="70px">
+                        <el-form-item label="ID" prop="id">
+                            <el-input v-model="editData.id" autocomplete="off" disabled></el-input>
+                        </el-form-item>
                         <el-form-item label="用户名" prop="name">
-                            <el-input v-model="newUsername" autocomplete="off"></el-input>
+                            <el-input v-model="editData.name" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="handleUpdateSubmit">提交</el-button>
-                            <el-button type="danger" @click="dialogVisible = false"
-                            >取消</el-button
-                            >
+                            <el-button type="success" @click="handleUpdateSubmit">提交</el-button>
+                            <el-button type="primary" @click="handleUpdateReset">重置</el-button>
+                            <el-button type="danger" @click="dialogVisible = false">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+                <el-dialog v-model="dialogPasswordVisible" title="修改密码" width="30%" center>
+                    <el-form ref="editPasswordForm" :model="editPassword" status-icon label-width="70px">
+                        <el-form-item label="旧密码" prop="oldPassword">
+                            <el-input v-model="editPassword.oldPassword" autocomplete="off" show-password
+                                      disabled></el-input>
+                        </el-form-item>
+                        <el-form-item label="新密码" prop="newPassword">
+                            <el-input v-model="editPassword.newPassword" autocomplete="off" show-password></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="success" @click="handleUpdatePasswordSubmit">提交</el-button>
+                            <el-button type="primary" @click="handleUpdatePasswordReset">重置</el-button>
+                            <el-button type="danger" @click="dialogPasswordVisible = false">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -76,10 +86,10 @@
                         label-width="70px"
                     >
                         <el-form-item label="旧密码" prop="oldPassword">
-                            <el-input type="text" v-model="oldPassword" style="color: red" show-password autocomplete="off" ></el-input>
+                            <el-input type="text" v-model="editPassword.oldPassword" style="color: red" show-password autocomplete="off" ></el-input>
                         </el-form-item>
                         <el-form-item label="新密码" prop="newPassword">
-                            <el-input type="text" v-model="newPassword" autocomplete="off" show-password ></el-input>
+                            <el-input type="text" v-model="editPassword.newPassword" autocomplete="off" show-password ></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="handleUpdatePasswordSubmit">提交</el-button>
@@ -120,10 +130,10 @@
                         <el-descriptions-item label="上传时间：">{{timeUp}}</el-descriptions-item>
                     </el-descriptions>
                     <el-row >
-                        <img style="margin-left: 90%; margin-top:0" @click="likeClick" v-show="likeVisible" src="../../public/assets/未点赞.png">
-                        <img style="margin-left: 90%; margin-top:0" @click="quitLikeClick" v-show="!likeVisible" src="../../public/assets/点赞.png">
-                        <img style="margin-left: 1%" v-show="keepVisible" @click="keepClick" src="../../public/assets/未收藏.png">
-                        <img style="margin-left: 1%" v-show="!keepVisible" @click="quitKeepClick" src="../../public/assets/收藏.png">
+                        <img style="margin-left: 90%; margin-top:0" @click="likeClick" v-show="!likeVisible" src="../../public/assets/未点赞.png">
+                        <img style="margin-left: 90%; margin-top:0" @click="quitLikeClick" v-show="likeVisible" src="../../public/assets/点赞.png">
+                        <img style="margin-left: 1%" v-show="!keepVisible" @click="keepClick" src="../../public/assets/未收藏.png">
+                        <img style="margin-left: 1%" v-show="keepVisible" @click="quitKeepClick" src="../../public/assets/收藏.png">
                     </el-row>
 
                 </el-card>
@@ -184,8 +194,7 @@ export default {
     data:function() {
         return{
             wellCome:sessionStorage.getItem('username'),
-            likeVisible:true,
-            keepVisible:true,
+
 
         }
     },
@@ -217,16 +226,26 @@ import {
     removeUser,
     updateUser,
     queryAdminById,
-    updateOneUser, createComment, getOneFile, deleteOneComment, createLike, deleteLike, createKeep, deleteKeep
+    updateOneUser,
+    createComment,
+    getOneFile,
+    deleteOneComment,
+    createLike,
+    deleteLike,
+    createKeep,
+    deleteKeep,
+    Isliked,
+    IsKeeped
 } from '@/api/api';
 import {ElMessage,UploadProps,UploadUserFile} from "element-plus";
 
 import {Promotion} from "@element-plus/icons-vue";
 import store from "@/store";
+const dialogVisible=ref(false)
 const commentText=ref('');
 const commentList = ref([]);
-const likeVisible=ref(true);
-const keepVisible=ref(true);
+const likeVisible=ref(false);
+const keepVisible=ref(false);
 const selectedCommentId = ref('');
 const fileName=ref('');
 const course=ref('');
@@ -239,7 +258,35 @@ const dialogReplyVisible=ref(false)
 const replyText=ref("")
 const touxiang=ref("");
 const wellCome=ref(JSON.parse(sessionStorage.getItem('login')).data.username)
+const editData = ref({
+    id: 0,
+    name: '',
+    nameBackup: ''
+})
+const editPassword = ref({
+    oldPassword: '',
+    newPassword: ''
+})
+const handleChangePassword = (data) => {
 
+
+    editPassword.value['oldPassword'] = JSON.parse(sessionStorage.getItem('login')).data.password
+    dialogPasswordVisible.value = true
+}
+const touImage=ref('')
+const handleClickEdit = (data) => {
+
+    const login = store.getters.isLogIn;
+    findUserById({userId:store.getters.isLogIn.id}
+    ).then(res => {
+        touImage.value=res.data.imageUrl;
+        editData.value['id'] = store.getters.isLogIn.id,
+            editData.value['name'] = res.data.nickname,
+            editData.value['nameBackup'] = res.data.nickname
+    })
+    console.log(editData.value)
+    dialogVisible.value = true
+}
 const sendComment = (cardId) => {
     if(commentText.value!=""){
         selectedCommentId.value = cardId;
@@ -266,7 +313,34 @@ const replyComment = (cardId) => {
     selectedCommentId.value = cardId;
     dialogReplyVisible.value=true
 }
+const handleUpdatePasswordSubmit = () => {
+    if (editPassword.value.oldPassword === editPassword.value.newPassword) {
+        dialogPasswordVisible.value = false;
+        return;
+    }
 
+    const login = store.getters.isLogIn;
+
+    if (!login.isLogIn) {
+        router.push('/login')
+    }
+    console.log(editData.value.name)
+    changePassword({
+        password: editPassword.value.newPassword
+    }).then(res => {
+        dialogPasswordVisible.value = false;
+        const login = JSON.parse(sessionStorage.getItem('login') || '{}');
+        if (res.code===1) {
+            login.data.password = editPassword.value.newPassword;
+            sessionStorage.setItem('login', JSON.stringify(login));
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+        }
+
+    })
+}
 const replyCommentSubmit = () => {
 
     createComment({
@@ -290,7 +364,42 @@ const deleteComment = (cardId) => {
     location.reload();
 };
 //const cardData= ref( null)
+const handleUpdateSubmit = () => {
+    if (editData.value.name === editData.value.nameBackup) {
+        dialogVisible.value = false;
+        return;
+    }
 
+    const login = store.getters.isLogIn;
+
+    if (!login.isLogIn) {
+        router.push('/login')
+    }
+    console.log(editData.value.name)
+    updateUser({
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        nickname: editData.value.name
+    }).then(res => {
+        dialogVisible.value = false;
+        console.log(res);
+        if (res.code===1) {
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+        }
+
+    })
+}
+const handleUpdateReset = () => {
+    editData.value['name'] = editData.value['nameBackup']
+
+}
+const handleUpdatePasswordReset = () => {
+    editPassword.value['newPassword'] = editPassword.value['oldPassword']
+
+}
+const dialogPasswordVisible=ref(false)
 const Image=ref("")
 const ParentName=ref("")
 const userName=ref("")
@@ -379,38 +488,38 @@ const searchCommentById = (id) => {
 
         for (let i = 0; i < filteredData.length; i++) {
             console.log(filteredData[i].authorId);
-            findUserById({ userId: filteredData[i].authorId }).then((res1) => {
-                console.log(res1.data);
-                userName.value = res1.data.username;
-                console.log(userName.value);
-                Image.value = res1.data.imageUrl;
+           // findUserById({ userId: filteredData[i].authorId }).then((res1) => {
+                // console.log(res1.data);
+                // userName.value = res1.data.username;
+                // console.log(userName.value);
+                // Image.value = res1.data.imageUrl;
                 if (filteredData[i].type === 2) {
-                    findUserById({ userId: filteredData[i].replyTo }).then((res2) => {
-                        console.log(res2.data);
+                  //  findUserById({ userId: filteredData[i].replyTo }).then((res2) => {
+                       // console.log(res2.data);
 
-                        ParentName.value = "@" + (res2.data?.username || "");
+                      //  ParentName.value = "@" + (res2.data?.username || "");
                         commentList.value[i] = {
                             commentId: filteredData[i].commentId,
-                            image: Image.value,
+                            image: filteredData[i].authorImageUrl,
                             authorId: filteredData[i].authorId.toString(),
-                            username: userName.value,
+                            username: filteredData[i].authorNickname,
                             parentId: filteredData[i].parentId.toString(),
-                            parentName: ParentName.value,
+                            parentName:"@" + filteredData[i].parentNickname||"",
                             commentType: filteredData[i].type,
                             content: filteredData[i].context,
                             time: filteredData[i].createTime
                         };
-                    }).catch((error) => {
-                        console.log(error);
-                    });
+                    // }).catch((error) => {
+                    //     console.log(error);
+                    // });
                 } else {
                     commentList.value[i] = {
                         commentId: filteredData[i].commentId,
-                        image: Image.value,
+                        image: filteredData[i].authorImageUrl,
                         authorId: filteredData[i].authorId.toString(),
-                        username: userName.value,
+                        username: filteredData[i].authorNickname,
                         parentId: filteredData[i].parentId.toString(),
-                        parentName: ParentName.value,
+                        parentName: "",
                         commentType: filteredData[i].type,
                         content: filteredData[i].context,
                         time: filteredData[i].createTime
@@ -419,9 +528,9 @@ const searchCommentById = (id) => {
 
                 // 执行其他操作
                 console.log(commentList.value);
-            }).catch((error) => {
-                console.log(error);
-            });
+            // }).catch((error) => {
+            //     console.log(error);
+            // });
         }
         console.log(commentList.value);
     }).catch((error) => {
@@ -444,11 +553,37 @@ onMounted(() => {
         console.log(error);
     });
     getFile()
+    getLikeAndKeep()
     searchCommentById(sessionStorage.getItem('fileId'))
 
 
-   // cardData.value=commentList.value
 })
+
+const getLikeAndKeep = () => {
+    Isliked({
+        targetId:sessionStorage.getItem('fileId'),
+        targetType:1
+    },  {params:{
+            targetId:sessionStorage.getItem('fileId'),
+            targetType:1
+        },}).then(res=>{
+        if(res.code===1){
+            likeVisible.value=res.data;
+        }
+    }).catch(error=>{
+        console.log(error);
+    })
+    const formData=new FormData();
+    formData.append('fileId',sessionStorage.getItem('fileId'));
+    IsKeeped(formData
+    ).then(res=>{
+        if(res.code===1){
+            keepVisible.value=res.data;
+        }
+    }).catch(error=>{
+        console.log(error);
+    })
+}
 
 const getFile = () => {
     const fileId=sessionStorage.getItem('fileId')
@@ -511,6 +646,7 @@ const likeClick=()=>{
     ).catch(error=>{
         console.log(error);
     })
+    location.reload()
 }
 const keepClick=()=>{
     keepVisible.value=!keepVisible.value
@@ -530,6 +666,7 @@ const keepClick=()=>{
     ).catch(error=>{
         console.log(error);
     })
+    location.reload()
 }
 
 const quitLikeClick=()=>{
@@ -550,6 +687,8 @@ const quitLikeClick=()=>{
     ).catch(error=>{
         console.log(error);
     })
+    location.reload()
+
 }
 const quitKeepClick=()=>{
     keepVisible.value=!keepVisible.value
@@ -569,6 +708,7 @@ const quitKeepClick=()=>{
     ).catch(error=>{
         console.log(error);
     })
+    location.reload()
 }
 </script>
 
