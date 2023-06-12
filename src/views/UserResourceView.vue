@@ -130,10 +130,10 @@
                         <el-descriptions-item label="上传时间：">{{timeUp}}</el-descriptions-item>
                     </el-descriptions>
                     <el-row >
-                      <img style="margin-left: 90%; margin-top:-10px" @click="likeClick" v-show="likeVisible" src="../../public/assets/未点赞.png">
-                      <img style="margin-left: 90%; margin-top:-10px" @click="quitLikeClick" v-show="!likeVisible" src="../../public/assets/点赞.png">
-                      <img style="margin-left: 1%; margin-top: -10px"  v-show="keepVisible" @click="keepClick" src="../../public/assets/未收藏.png">
-                      <img style="margin-left: 1%; margin-top: -10px" v-show="!keepVisible" @click="quitKeepClick" src="../../public/assets/收藏.png">
+                      <img style="margin-left: 90%; margin-top:-10px" @click="likeClick" v-show="!likeVisible" src="../../public/assets/未点赞.png">
+                      <img style="margin-left: 90%; margin-top:-10px" @click="quitLikeClick" v-show="likeVisible" src="../../public/assets/点赞.png">
+                      <img style="margin-left: 1%; margin-top: -10px"  v-show="!keepVisible" @click="keepClick" src="../../public/assets/未收藏.png">
+                      <img style="margin-left: 1%; margin-top: -10px" v-show="keepVisible" @click="quitKeepClick" src="../../public/assets/收藏.png">
                     </el-row>
 
                 </el-card>
@@ -714,7 +714,7 @@ const quitKeepClick=()=>{
 
 
 
-<style>
+<style scoped>
 .time {
     font-size: 12px;
     color: #999;

@@ -16,6 +16,53 @@
     <el-container class="el-container">
 
       <el-main class="el-main">
+          <div style="display: flex; justify-content: flex-end; align-items: center;margin-bottom: 30px" class="Touxiang">
+              <el-dropdown style="text-align: right">
+                  <div class="account">
+                      <img :src="avaurl"  class="touxiang"/>
+                      <div style="font-weight: bolder;margin-top: 10px; "><div  style="color: aqua">{{wellCome}}</div></div>
+                  </div>
+                  <template #dropdown>
+                      <el-dropdown-menu>
+
+                          <el-dropdown-item @click="handleClickEdit">修改昵称</el-dropdown-item>
+                          <el-dropdown-item @click="handleChangePassword">修改密码</el-dropdown-item>
+                          <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                      </el-dropdown-menu>
+                  </template>
+              </el-dropdown>
+          </div>
+          <el-dialog v-model="dialogVisible" title="更改用户信息" width="30%" center>
+              <el-form ref="editDataForm" :model="editData" status-icon label-width="70px">
+                  <el-form-item label="ID" prop="id">
+                      <el-input v-model="editData.id" autocomplete="off" disabled></el-input>
+                  </el-form-item>
+                  <el-form-item label="用户名" prop="name">
+                      <el-input v-model="editData.name" autocomplete="off"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                      <el-button type="success" @click="handleUpdateSubmit">提交</el-button>
+                      <el-button type="primary" @click="handleUpdateReset">重置</el-button>
+                      <el-button type="danger" @click="dialogVisible = false">取消</el-button>
+                  </el-form-item>
+              </el-form>
+          </el-dialog>
+          <el-dialog v-model="dialogPasswordVisible" title="修改密码" width="30%" center>
+              <el-form ref="editPasswordForm" :model="editPassword" status-icon label-width="70px">
+                  <el-form-item label="旧密码" prop="oldPassword">
+                      <el-input v-model="editPassword.oldPassword" autocomplete="off" show-password
+                                disabled></el-input>
+                  </el-form-item>
+                  <el-form-item label="新密码" prop="newPassword">
+                      <el-input v-model="editPassword.newPassword" autocomplete="off" show-password></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                      <el-button type="success" @click="handleUpdatePasswordSubmit">提交</el-button>
+                      <el-button type="primary" @click="handleUpdatePasswordReset">重置</el-button>
+                      <el-button type="danger" @click="dialogPasswordVisible = false">取消</el-button>
+                  </el-form-item>
+              </el-form>
+          </el-dialog>
         <el-avatar class="img" :src="avaurl" size="large"/>
         <el-card class="box-card">
           <template #header>
@@ -29,7 +76,7 @@
                   :before-close="handleClose"
               >
 
-                <el-table :data="tableData" border stripe style="width: 100%; margin-top: 20px;" >
+                <el-table :data="tableData1" border stripe style="width: 100%; margin-top: 20px;" >
                   <!--      <el-table-column type="selection" />-->
                   <el-table-column prop="id" label="ID" min-width="60px"></el-table-column>
                   <el-table-column prop="filename" min-width="70px" label="文件名"></el-table-column>
@@ -60,6 +107,13 @@
                     </template>
                   </el-table-column>
                 </el-table>
+                  <el-pagination
+                          :current-page="currentPage1"
+                          :page-size="pageSize"
+                          :total="total1"
+                          @current-change="handlePageChange1"
+                          layout="prev, pager, next,jumper"
+                  ></el-pagination>
                 <template #footer>
                 </template>
               </el-dialog>
@@ -133,6 +187,13 @@
                 </template>
               </el-table-column>
             </el-table>
+              <el-pagination
+                      :current-page="currentPage"
+                      :page-size="pageSize"
+                      :total="total"
+                      @current-change="handlePageChange"
+                      layout="prev, pager, next,jumper"
+              ></el-pagination>
           </div>
 
         </el-card>
@@ -146,27 +207,152 @@
   </div>
 
 </template>
+<script>
+export default {
+    name: "AboutView",
+    data: function () {
+        return {
+            wellCome:JSON.parse(sessionStorage.getItem('login')).data &&JSON.parse(sessionStorage.getItem('login')).data.username?JSON.parse(sessionStorage.getItem('login')).data.username:""
 
+        }
+    },
+
+    methods: {
+        logout() {
+            sessionStorage.removeItem('login');
+            this.$router.push('/');
+        },
+
+
+    },
+
+
+}
+</script>
 <script  setup>
-import {ref, onMounted, nextTick} from 'vue'
+import {ref, onMounted, nextTick, watch} from 'vue'
 import { User,Star,UserFilled,More } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-
+const name=ref("")
 const input1 = ref('')
 const input2 = ref('')
 const router = useRouter()
-
+const avaurl=ref('')
 const count = ref(0)
 const store = useStore()
-import { ElMessageBox } from 'element-plus'
-import {getcollectfiles, getMyDetail, getMyfiles, login, QueryFileList, uploadFile, uploadImg} from "@/api/api";
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {
+    changePassword, findUserById,
+    getcollectfiles,
+    getMyDetail,
+    getMyfiles,
+    login,
+    QueryFileList, updateOneUser,
+    updateUser,
+    uploadFile,
+    uploadImg
+} from "@/api/api";
 const tableData = ref([])
+const tableData1 = ref([])
 const currentPage = ref(1)
+const currentPage1 = ref(1)
 const total = ref(0)
+const total1 = ref(0)
 const pageSize = 5
 const arg=ref('')
 const handleSearch1=ref(false)
+const dialogPasswordVisible=ref(false)
+const dialogVisible=ref(false)
+const editData = ref({
+    id: 0,
+    name: '',
+    nameBackup: ''
+})
+const editPassword = ref({
+    oldPassword: '',
+    newPassword: ''
+})
+const handleUpdateSubmit = () => {
+    if (editData.value.name === editData.value.nameBackup) {
+        dialogVisible.value = false;
+        return;
+    }
+
+    const login = store.getters.isLogIn;
+
+    if (!login.isLogIn) {
+        router.push('/login')
+    }
+    console.log(editData.value.name)
+    updateUser({
+        userId:JSON.parse(sessionStorage.getItem('login')).id,
+        nickname: editData.value.name
+    }).then(res => {
+        dialogVisible.value = false;
+        console.log(res);
+        if (res.code===1) {
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+        }
+
+    })
+}
+const handleUpdateReset = () => {
+    editData.value['name'] = editData.value['nameBackup']
+
+}
+const handleUpdatePasswordReset = () => {
+    editPassword.value['newPassword'] = editPassword.value['oldPassword']
+
+}
+const handleClickEdit = (data) => {
+
+    const login = store.getters.isLogIn;
+    findUserById({userId:store.getters.isLogIn.id}
+    ).then(res => {
+        Image.value=res.data.imageUrl;
+        editData.value['id'] = store.getters.isLogIn.id,
+            editData.value['name'] = res.data.nickname,
+            editData.value['nameBackup'] = res.data.nickname
+    })
+    console.log(editData.value)
+    dialogVisible.value = true
+}
+const handleChangePassword = (data) => {
+    editPassword.value['oldPassword'] = JSON.parse(sessionStorage.getItem('login')).data.password
+    dialogPasswordVisible.value = true
+}
+const handleUpdatePasswordSubmit = () => {
+    if (editPassword.value.oldPassword === editPassword.value.newPassword) {
+        dialogPasswordVisible.value = false;
+        return;
+    }
+
+    const login = store.getters.isLogIn;
+
+    if (!login.isLogIn) {
+        router.push('/login')
+    }
+    console.log(editData.value.name)
+    changePassword({
+        password: editPassword.value.newPassword
+    }).then(res => {
+        dialogPasswordVisible.value = false;
+        const login = JSON.parse(sessionStorage.getItem('login') || '{}');
+        if (res.code===1) {
+            login.data.password = editPassword.value.newPassword;
+            sessionStorage.setItem('login', JSON.stringify(login));
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+        }
+
+    })
+}
 const handleClickUserType = (data) => {
   // userData.value['id']=data.id
   // dialogUserTypeVisible.value=true
@@ -220,16 +406,21 @@ const handleClickUserType = (data) => {
 //     console.error(error);
 //   });
 // }
-const handleSearch = () => {
-  // console.log("outside", search('user'))
+// const handleSearch = () => {
+//   // console.log("outside", search('user'))
+//
+//   search(arg.value, 1)
+//
+// }
 
-  search(arg.value, 1)
+const handlePageChange = (newPage) => {
+  currentPage.value = newPage
 
 }
+const handlePageChange1 = (newPage) => {
+    currentPage1.value = newPage
 
-// const handlePageChange = (newPage) => {
-//   currentPage.value = newPage
-// }
+}
 //
 // const handleSelectionChange = (val) => {
 //   // console.log(val[0].id)
@@ -253,7 +444,12 @@ let fileUpload = ref()
 const headers = {
   // 'Content-Type': 'multipart/form-data'
 }
-
+watch(currentPage, (newValue) => {
+    searchUpload(arg.value, newValue)
+})
+watch(currentPage1, (newValue) => {
+    searchKeep(arg.value, newValue)
+})
 // 选择文件时被调用，将他赋值给fileUpload
 const handleChange = (file) => {
   fileUpload.value = file
@@ -263,7 +459,24 @@ const submitUpload=(res)=> {
   console.log(fileUpload.value,'ssubmitUpload')
   const formData = new FormData()
   formData.append('image', fileUpload.value.raw)
-  // console.log(formData,"formData",fileUpload.value)
+    formData.append('userId', JSON.parse(sessionStorage.getItem('login')).id)
+  console.log(formData,"formData",fileUpload.value)
+    updateOneUser({
+        data:formData,
+        header:{
+            'Content-Type': 'multipart/form-data',
+            Authorization: store.state.userInfo.token
+        }
+    }).then(res=>{
+        if(res.code===1){
+            ElMessage({
+                message: "上传成功",
+                type: 'success',
+                duration: 1500,
+            });
+            location.reload()
+        }
+    })
   uploadImg({
     data:formData,
     header:{
@@ -272,96 +485,105 @@ const submitUpload=(res)=> {
     }
   })
 }
+const searchUpload = () => {
+    getMyfiles({
+        pageSize:5,
+        pageNum:currentPage.value},{
+        params:{
+            yearTag: -1,
+            courseTag: "",
+            typeTag: "",
+            searchString:arg,
+            pageSize:5,
+            pageNum:currentPage.value
+        },
+        headers: {
+            Authorization: login.token
+        }
+    }).then(res => {
+    tableData.value=[];
+    let len=res.data.rows.length;
+    console.log(len);
+    nextTick(() => {
+        let usertype=[]
+        for (let i = 0; i < len; i++) {
 
-const name=ref(store.state.userInfo.data.username)
+            tableData.value[i] = {
+                id: res.data.rows[i].fileId,
+                filename: res.data.rows[i].filename,
+                year:res.data.rows[i].yearTag,
+                time: res.data.rows[i].createTime,
+                title:res.data.rows[i].title,
+                course: res.data.rows[i].courseTag
+            };
+        }
+
+        console.log(tableData);
+        console.log(tableData.value);
+    });
+    total.value = res.data.total;
+}).catch(error=>{
+    console.error(error);
+});
+}
+const searchKeep = () =>{
+    getcollectfiles(
+        {pageSize:5,
+            pageNumber:currentPage1.value},{
+            params:{
+                yearTag: -1,
+                courseTag: "",
+                typeTag: "",
+                searchString:arg,
+                pageSize:5,
+                pageNum:currentPage1.value
+            },
+            headers: {
+                Authorization: login.token
+            }
+        }).then(res => {
+        tableData1.value=[];
+        let len=res.data.length-1;
+        console.log(len);
+        nextTick(() => {
+            let usertype=[]
+            for (let i = 0; i < len; i++) {
+
+                tableData1.value[i] = {
+                    id: res.data[i].fileId,
+                    filename: res.data[i].filename,
+                    year:res.data[i].yearTag,
+                    time: res.data[i].createTime,
+                    title:res.data[i].title,
+                    course: res.data[i].courseTag
+                };
+            }
+
+            console.log(tableData);
+            console.log(tableData.value);
+        });
+        total1.value = res.data[res.data.length-1].length;
+
+
+    }).catch(error=>{
+        console.error(error);
+    });
+}
 onMounted(() => {
   console.log(store.state.userInfo,"store")
-  getMyfiles({
-    pageNum:currentPage.value},{
-    params:{
-      yearTag: -1,
-      courseTag: "",
-      typeTag: "",
-      searchString:arg,
-      pageSize:5,
-      pageNum:currentPage.value
-    },
-    headers: {
-      Authorization: login.token
-    }
-  }).then(res => {
-    tableData.value=[];
-    let len=res.data.rows.length;
-    console.log(len);
-    nextTick(() => {
-      let usertype=[]
-      for (let i = 0; i < len; i++) {
 
-        tableData.value[i] = {
-          id: res.data.rows[i].fileId,
-          filename: res.data.rows[i].filename,
-          year:res.data.rows[i].yearTag,
-          time: res.data.rows[i].createTime,
-          title:res.data.rows[i].title,
-          course: res.data.rows[i].courseTag
-        };
-      }
+  searchUpload()
+searchKeep()
 
-      console.log(tableData);
-      console.log(tableData.value);
-    });
-    total.value = res.data.total;
-  }).catch(error=>{
-    console.error(error);
-  });
-  getcollectfiles({
-    pageNum:currentPage.value},{
-    params:{
-      yearTag: -1,
-      courseTag: "",
-      typeTag: "",
-      searchString:arg,
-      pageSize:5,
-      pageNum:currentPage.value
-    },
-    headers: {
-      Authorization: login.token
-    }
-  }).then(res => {
-    tableData.value=[];
-    let len=res.data.rows.length;
-    console.log(len);
-    nextTick(() => {
-      let usertype=[]
-      for (let i = 0; i < len; i++) {
-
-        tableData.value[i] = {
-          id: res.data.rows[i].fileId,
-          filename: res.data.rows[i].filename,
-          year:res.data.rows[i].yearTag,
-          time: res.data.rows[i].createTime,
-          title:res.data.rows[i].title,
-          course: res.data.rows[i].courseTag
-        };
-      }
-
-      console.log(tableData);
-      console.log(tableData.value);
-    });
-    total.value = res.data.total;
-
-
-  }).catch(error=>{
-    console.error(error);
-  });
   getMyDetail({
     header:{
       Authorization: store.state.userInfo.token
     }
   }).then(res=>{
-    console.log(
-        res,'res'
-    )
+    if(res.code===1){
+        name.value=res.data.nickname
+        avaurl.value=res.data.imageUrl
+    }
   })
 })
 
@@ -460,7 +682,19 @@ onMounted(() => {
   background-size: cover;
   height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
 }
+.Touxiang{
+    margin-left: 28vw;
+}
 
+.touxiang{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    margin-top: 15px;
+    box-shadow: 0 0 0 2px black;
+
+    /*设为圆形*/
+}
 </style>
 
 

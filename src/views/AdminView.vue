@@ -155,7 +155,7 @@ export default {
     methods: {
         logout() {
             sessionStorage.removeItem('login');
-            this.$router.push('/login');
+            this.$router.push('/');
         },
 
 
@@ -169,7 +169,7 @@ import { ArrowRight } from '@element-plus/icons-vue'
 import { computed, onMounted, ref, nextTick, watch } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import * as echarts from 'echarts'
-const dialogPasswordVisible=ref(false)
+co
 import {
 
     searchUser,
@@ -181,7 +181,7 @@ import {
 import { CountTo } from 'vue3-count-to'
 import { useStore } from 'vuex';
 import {ElMessage} from "element-plus";
-const dialogVisible=ref(false)
+
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
@@ -206,6 +206,8 @@ watch(routes, (newval) => {
         location.reload()
     }
 })
+const dialogPasswordVisible=ref(false)
+const dialogVisible=ref(false)
 const editData = ref({
     id: 0,
     name: '',
@@ -248,8 +250,6 @@ const handleSetLineChartData = name => {
     router.push(name)
 }
 const handleChangePassword = (data) => {
-
-
     editPassword.value['oldPassword'] = JSON.parse(sessionStorage.getItem('login')).data.password
     dialogPasswordVisible.value = true
 }
@@ -273,9 +273,6 @@ const handleClickEdit = (data) => {
         editData.value['name'] = res.data.nickname,
         editData.value['nameBackup'] = res.data.nickname
     })
-
-
-
     console.log(editData.value)
     dialogVisible.value = true
 }

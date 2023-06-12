@@ -26,6 +26,7 @@
           title="资源上传"
           width="40%"
           :before-close="handleClose"
+
       >
 
         <el-form :model="form" label-width="120px">
@@ -37,17 +38,19 @@
           </el-col>
           <el-form-item label="Activity time">
             <el-col :span="10">
-              <!--                <el-date-picker-->
-              <!--                    v-model="form.date1"-->
-              <!--                    type="date"-->
-              <!--                    placeholder="Pick a date"-->
-              <!--                    style="width: 100%"-->
-              <!--                />-->
-              <el-date-picker
-                  v-model="form.date1"
-                  type="year"
-                  placeholder="选择年">
-              </el-date-picker>
+                <el-select v-model="form.date1" placeholder="选择年份">
+                    <el-option
+                            v-for="year in years"
+                            :key="year"
+                            :label="year"
+                            :value="year"
+                    ></el-option>
+                </el-select>
+<!--              <el-date-picker-->
+<!--                  v-model="form.date1"-->
+<!--                  type="year"-->
+<!--                  placeholder="选择年">-->
+<!--              </el-date-picker>-->
             </el-col>
           </el-form-item>
           <el-form-item label="课程标签">
@@ -92,17 +95,17 @@
           </template>
         </el-upload>
         <el-button class="submit" type="primary" @click="submitUpload">Submit</el-button>
-        <el-button>Cancel</el-button>
+        <el-button @click="Cancel" >Cancel</el-button>
       </el-dialog>
       <el-card  style="margin-top: 200px; height: 700px" shadow="always" >
 
         <div class="card-header" style="display: flex; justify-content: flex-end; align-items: center;">
           <el-button class="el-button" type="primary" :icon="Plus"  @click="upload = true">上传</el-button>
-          <el-input v-model="arg" style="width: 500px;" placeholder="请输入关键字搜索"><template #append>
-            <el-button type="primary" @click="handleSearch"><el-icon>
-              <Search />
-            </el-icon>搜索</el-button>
-          </template></el-input>&nbsp;&nbsp;&nbsp;
+<!--          <el-input v-model="arg" style="width: 500px;" placeholder="请输入关键字搜索"><template #append>-->
+<!--            <el-button type="primary" @click="handleSearch"><el-icon>-->
+<!--              <Search />-->
+<!--            </el-icon>搜索</el-button>-->
+<!--          </template></el-input>&nbsp;&nbsp;&nbsp;-->
 
 
         </div>
@@ -215,6 +218,31 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+    data() {
+        return {
+            years: [] // 用于存储可选择的年份列表
+        };
+    },
+    mounted() {
+        this.generateYears();
+    },
+    methods: {
+        generateYears() {
+            const startYear = 2010;
+            const endYear = 2023;
+            const years = [];
+
+            for (let year = startYear; year <= endYear; year++) {
+                years.push(year);
+            }
+
+            this.years = years;
+        }
+    }
+};
+</script>
 <script setup>
 import {ref, onMounted, nextTick, watch} from 'vue'
 import { useRouter } from 'vue-router';
@@ -321,10 +349,15 @@ const handleSelectionChange = (val) => {
 
 
 const uploadRef = ref(null)
-
+const temp=ref(false)
 const submitUpload = () => {
   console.log(1111111   )
   uploadRef.value.submit()
+  upload.value=false
+
+}
+const Cancel = () => {
+    upload.value=false
 }
 /*const formData = reactive({
   params:new FormData()
@@ -341,7 +374,11 @@ const uploadFileWrapper = (file) => {
   console.log('filefilefilefile',file)
   const formData=new FormData()
   formData.append('file', file.file)
-  formData.append('typeTag', 'form.type')
+  formData.append('typeTag', form.type)
+    formData.append('courseTag', form.course)
+    formData.append('title', form.title)
+    formData.append('yearTag', form.date1);
+    formData.append('context', form.desc)
   formData.append('userId', store.state.userInfo.id)
   for (const key in form) {
     formData.append(key, form[key])
@@ -390,7 +427,7 @@ watch(currentPage, (newValue) => {
 
 
 </script>
-<style>
+<style scoped>
 .common-aside {
   background-color: rgb(34, 40, 50);
   width: 200px;
@@ -440,6 +477,19 @@ watch(currentPage, (newValue) => {
   background-image: url("../../public/assets/img.png");
   background-size: cover;
   height: 120vh; /* 将容器的高度设置为整个视口的高度，以确保图片填充整个页面 */
+}
+.Touxiang{
+    margin-left: 28vw;
+}
+
+.touxiang{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    margin-top: 15px;
+    box-shadow: 0 0 0 2px black;
+
+    /*设为圆形*/
 }
 </style>
 

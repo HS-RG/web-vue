@@ -322,7 +322,7 @@ const handleUpdatePasswordSubmit = () => {
     const login = store.getters.isLogIn;
 
     if (!login.isLogIn) {
-        router.push('/login')
+        router.push('/')
     }
     console.log(editData.value.name)
     changePassword({
@@ -360,8 +360,16 @@ const replyCommentSubmit = () => {
 const deleteComment = (cardId) => {
     deleteOneComment({
         commentId:cardId
-    });
-    location.reload();
+    }).then(res=>{
+        if(res.code===1){
+            ElMessage({
+                message: '删除成功',
+                type: 'success',
+            })
+        }
+    })
+    ;
+    searchCommentById(sessionStorage.getItem('fileId'))
 };
 //const cardData= ref( null)
 const handleUpdateSubmit = () => {
@@ -373,7 +381,7 @@ const handleUpdateSubmit = () => {
     const login = store.getters.isLogIn;
 
     if (!login.isLogIn) {
-        router.push('/login')
+        router.push('/')
     }
     console.log(editData.value.name)
     updateUser({
@@ -714,7 +722,7 @@ const quitKeepClick=()=>{
 
 
 
-<style>
+<style scoped>
 .time {
     font-size: 12px;
     color: #999;

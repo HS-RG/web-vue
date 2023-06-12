@@ -82,10 +82,10 @@
                 label-width="70px"
             >
                 <el-form-item label="ID" prop="id">
-                    <el-input v-model="editData.id" autocomplete="off" show-password disabled></el-input>
+                    <el-input v-model="editData.id" autocomplete="off" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="昵称" prop="name">
-                    <el-input v-model="editData.name" autocomplete="off" show-password></el-input>
+                    <el-input v-model="editData.name" autocomplete="off" ></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="success" @click="handleUpdateSubmit">提交</el-button>
@@ -109,10 +109,10 @@
                 label-width="70px"
             >
                 <el-form-item label="旧密码" prop="oldPassword">
-                    <el-input v-model="editPassword.oldPassword" autocomplete="off"  disabled></el-input>
+                    <el-input v-model="editPassword.oldPassword" autocomplete="off" show-password  disabled></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="newPassword">
-                    <el-input v-model="editPassword.newPassword" autocomplete="off"></el-input>
+                    <el-input v-model="editPassword.newPassword" show-password autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="success" @click="handleUpdatePasswordSubmit ">提交</el-button>
