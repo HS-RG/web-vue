@@ -1,6 +1,6 @@
 <template>
-    <div class="login-body" >
-        <div class="title" style="margin-top: 3vh; font-size: 40px; color:#3366FF;  text-shadow: 0 8px 10px #6699FF;  font-weight: bolder;  text-align: center">华师热狗</div>
+  <div class="login-body" :style="{width: fullWidth+'px', height:fullHeight+'px'}">
+    <div class="title" style="margin-top: 9vh; margin-left:3vh ; font-size: 50px; color:#ffffff;    font-weight: bolder;  text-align: center">SE资源互助管理平台</div>
         <div class="login-container" style="margin-top: 2vh">
             <div class="head">
                 <img class="logo" src="../assets/用户.png" width="64" height="64" />
@@ -16,7 +16,7 @@
                         message: '请输入您的账号！',
                         trigger: 'blur',
                     }
-                ]">
+                ]"> <el-icon style="margin-left:40px; margin-top: -38px"><User/></el-icon>
                     <el-input type="text" v-model.trim="data.loginData.username" autocomplete="off"></el-input>
                 </el-form-item>
                 <br />
@@ -26,7 +26,7 @@
                         message: '请输入您的密码！',
                         trigger: 'blur',
                     }
-                ]">
+                ]"> <el-icon style="margin-left:40px; margin-top: -38px"><EditPen/></el-icon>
                     <el-input type="password" v-model.trim="data.loginData.password" autocomplete="off"></el-input>
                 </el-form-item>
                 <br />
@@ -49,7 +49,7 @@ import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import {ElMessage} from "element-plus";
-
+import { User,EditPen } from '@element-plus/icons-vue'
 const store = useStore()
 const router = useRouter()
 const data = reactive({
@@ -114,6 +114,9 @@ const loginBase = (data) => {
     width: 100%;
     height: 100vh;
     background-color: #b5f3f2;
+    background-image:url("@/../src/assets/login.jpg");
+    background-size: cover; /* 使图片平铺满整个浏览器（从宽和高的最大需求方面来满足，会使某些部分无法显示在区域中） */
+    position: absolute; /* 不可缺少 */
 }
 
 .login-container {
@@ -126,6 +129,7 @@ const loginBase = (data) => {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    margin-left: 550px;
 }
 
 .head {
@@ -143,7 +147,7 @@ const loginBase = (data) => {
 
 .head .title {
     font-size: 20px;
-    color: #1BAEAE;
+    color: #59aaef;
     font-weight: bold;
 }
 

@@ -178,6 +178,21 @@ export const getMyDetail = data => {
     })
 }
 
+export const getMyfiles = data => {
+    return post3({
+        url: '/file/GetMyFiles',
+        data:null,
+        'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+    })
+}
+export const getcollectfiles = data => {
+    return post2({
+        url: '/user/listMyCollectionByJwt',
+        data:null,
+        'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+    })
+}
+
 export const QueryFileList = data => {
     return post3({
         url: '/file/QueryFileList',
