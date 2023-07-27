@@ -3,11 +3,10 @@
         <el-dropdown style="text-align: right">
             <div class="account">
                 <img :src="url"  class="touxiang"/>
-                <div style="font-weight: bolder;margin-top: 10px; "><div  style="color: aqua">{{wellCome}}</div></div>
+                <div style="font-weight: bolder;margin-top: 10px; "><div  style="color: #56a2ee">{{wellCome}}</div></div>
             </div>
             <template #dropdown>
                 <el-dropdown-menu>
-
                     <el-dropdown-item @click="handleClickEdit">修改昵称</el-dropdown-item>
                     <el-dropdown-item @click="handleChangePassword">修改密码</el-dropdown-item>
                     <el-dropdown-item @click="logout">退出</el-dropdown-item>

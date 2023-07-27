@@ -158,16 +158,6 @@ export const DeleteOneUser = data => {
         }
     })
 }
-export const deleteOneFile = data => {
-    return post2({
-        url: '/file/DeleteOneFile',
-        data,
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        }
-    })
-}
 
 export const getMyDetail = data => {
     console.log(data,'ssssssss')
@@ -231,26 +221,7 @@ export const listCommentByParent = data => {
         }
     })
 }
-export const getAllCommentCount = data => {
-    return post5({
-        url: '/comment/getAllCommentNum',
-        data,
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        }
-    })
-}
-export const getAllLikeCount = data => {
-    return post5({
-        url: '/like/allLikeNum',
-        data,
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        }
-    })
-}
+
 export const countLikeByTarget = data => {
     return post4({
         url: '/like/countLikeByTarget',
@@ -312,61 +283,61 @@ export const removeUser = data => {
 
 export const changePassword = data => {
     return post({
-        url: '/auth/resetPassword',
-        data,
-        headers:{
-        'Content-Type': 'application/json',
-
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-    },
+        url: '/loginIn',
+        data
     })
 }
 
+export const searchIll = data => {
+    return post({
+        url: '/loginIn',
+        data
+    })
+}
 
 export const updateUser = data => {
     return post({
-        url: '/user/updateOneUser',
-        headers:{
-            'Content-Type': 'multipart/form-data',
-
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        },
-        params:{
-            ...data,
-        }
+        url: '/loginIn',
+        data
     })
 }
 
-export const IsKeeped = data => {
+export const addIll = data => {
     return post({
-        url: '/user/determineIsCollected',
-        data,
-
-        headers:{
-            'Content-Type': 'application/json',
-
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        },
-        params:{
-            fileId:sessionStorage.getItem('fileId')
-        }
+        url: '/loginIn',
+        data
     })
-
 }
-export const Isliked = data => {
+
+export const removeIll = data => {
     return post({
-        url: '/like/determineIsLiked',
-        data,
-        params:{
-            targetId:sessionStorage.getItem('fileId'),
-            targetType:1
-        },
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
-        }
+        url: '/loginIn',
+        data
     })
 }
+
+export const updateIll = data => {
+    return post({
+        url: '/loginIn',
+        data
+    })
+}
+
+export const getFileIds = data => {
+    return post({
+        url: '/loginIn',
+        data
+    })
+}
+
+export const fetchFile = data => {
+    return post({
+        url: '/loginIn',
+        data
+    })
+}
+
+
 
 
 export const searchPaper = data =>{
@@ -378,12 +349,78 @@ export const searchPaper = data =>{
         }
     })
 }
+export const addPaper = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
+export const removePaper = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+export const updatePaper = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
+export const deleteFile = data => {
+    return post({
+        url: '/loginIn',
+        data
+    })
+}
 
+export const searchQuestion = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
+export const addQuestion = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
+export const updateQuestion = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
-
-
-
+export const removeQuestion = data => {
+    return post({
+        url: '/loginIn',
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
