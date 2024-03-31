@@ -79,6 +79,14 @@ const routes = [
           showDashboard: false
         },
       },
+      {
+        path: '/grade',
+        name: 'grde',
+        component: () => import('../views/GradeView.vue'),
+        meta: {
+          showDashboard: false
+        },
+      },
     ]
   },
 ]

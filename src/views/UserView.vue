@@ -35,9 +35,9 @@
             <el-table-column prop="id" label="ID"></el-table-column>
             <el-table-column prop="username" min-width="40px" label="用户名"></el-table-column>
             <el-table-column prop="nickname" min-width="40px" label="昵称"></el-table-column>
-            <el-table-column prop="usertype" min-width="30px" label="权限"></el-table-column>
-            <el-table-column prop="addTime" label="注册时间"></el-table-column>
-            <el-table-column prop="latestTime" label="最近活动时间"></el-table-column>
+            <el-table-column prop="usertype" min-width="30px" label="身份"></el-table-column>
+            <el-table-column prop="addTime" label="考核次数"></el-table-column>
+            <el-table-column prop="latestTime" label="平均分数"></el-table-column>
             <el-table-column label="操作" align="center">
                 <template v-slot="scope">
                     <el-button
@@ -180,14 +180,15 @@ import {ref, onMounted, watch, nextTick} from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import {
-    changePassword,
-    searchUser,
-    findUserById,
-    setUserType,
-    removeUser,
-    updateUser,
-    queryAdminById,
-    updateOneUser, DeleteOneFile, DeleteOneUser
+  findByName,
+  changePassword,
+  searchUser,
+  findUserById,
+  setUserType,
+  removeUser,
+  updateUser,
+  queryAdminById,
+  updateOneUser, DeleteOneFile, DeleteOneUser, QueryGradeList, QueryUserList
 } from '@/api/api';
 import {ElMessage} from "element-plus";
 const url=ref("")
@@ -223,7 +224,7 @@ const pageSize = 5
 onMounted(() => {
     findUserById({userId:store.getters.isLogIn.id}
     ).then(res=>{
-        url.value=res.data.imageUrl;
+      //  url.value=res.data.imageUrl;
     });
     search('', currentPage.value)
 })
@@ -358,10 +359,10 @@ const handleClickEdit = (data) => {
     const login = store.getters.isLogIn;
     findUserById({userId:store.getters.isLogIn.id}
     ).then(res => {
-        Image.value=res.data.imageUrl;
-        editData.value['id'] = store.getters.isLogIn.id,
-            editData.value['name'] = res.data.nickname,
-            editData.value['nameBackup'] = res.data.nickname
+        // Image.value=res.data.imageUrl;
+        // editData.value['id'] = store.getters.isLogIn.id,
+        //     editData.value['name'] = res.data.nickname,
+        //     editData.value['nameBackup'] = res.data.nickname
     })
     console.log(editData.value)
     dialogVisible.value = true
@@ -410,49 +411,43 @@ const search = (arg, page) => {
     if (!login.isLogIn) {
         router.push('/adminLogin')
     }
-    searchUser({
-        nickname:arg,
-        pageSize:pageSize,
-        pageNumber:currentPage.value},{
+    QueryUserList({
+        username:arg,
+        size:pageSize,
+        page:currentPage.value-1
+    },{
         params:{
+          token:login.token,
             nickname:arg,
-            pageSize:pageSize,
-            pageNumber:currentPage.value
+            size:pageSize,
+            page:currentPage.value-1
         },
         headers: {
             Authorization: login.token
         }
     }).then(res => {
+      console.log(res)
         tableData.value=[];
-        //  let len=res.length;
-        let len=res.data.length-1;
+        let len=res.userList.userList.length;
         let i=0;
         console.log(len);
         nextTick(() => {
-            let usertype=[]
             for (let i = 0; i < len; i++) {
-                usertype.push(0);
-                (function (index) {
-                    queryAdminById({ userId: res.data[index].userId }).then(response => {
-                        tableData.value[index].usertype = response.data === true ? "管理员" : "普通用户";
-                        usertype[index] = response.data === true ? 1 : 0;
-                    });
-                })(i);
-                console.log(usertype);
-                tableData.value[i] = {
-                    id: res.data[i].userId,
-                    username: res.data[i].username,
 
-                    addTime: res.data[i].createTime,
-                    latestTime: res.data[i].updateTime,
-                    nickname: res.data[i].nickname
+                tableData.value[i] = {
+                    id: res.userList.userList[i].userId,
+                    username: res.userList.userList[i].username,
+                     addTime: res.userList.userList[i].surgeryTimes,
+                     latestTime:res.userList.userList[i].averageScore ,
+                    nickname: res.userList.userList[i].username,
+                    usertype:res.userList.userList[i].role
                 };
             }
 
             console.log(tableData);
             console.log(tableData.value);
         });
-        total.value = res.data[len].length;
+        total.value = res.userList.total;
 
 
     }).catch(error=>{

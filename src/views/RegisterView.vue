@@ -1,6 +1,6 @@
 <template>
   <div class="login-body" :style="{width: fullWidth+'px', height:fullHeight+'px'}">
-    <div class="title" style="margin-top: 9vh; margin-left:3vh ; font-size: 50px; color:#ffffff;    font-weight: bolder;  text-align: center">SE资源互助管理平台</div>
+    <div class="title" style="margin-top: 9vh; margin-left:3vh ; font-size: 50px; color:#ffffff;    font-weight: bolder;  text-align: center">战创伤麻醉手术VR训练考核后台</div>
         <div class="login-container" style="margin-top: 2vh">
             <div class="head">
                 <img class="logo" src="../assets/用户.png" width="64" height="64" />
@@ -80,7 +80,7 @@ const loginBase = (data) => {
         username:data.username,
         password: data.password
     }).then(res => {
-        if (res.code===1) {
+        if (res.code===200) {
             const toStore = {
                 data: data,
                 token: res.data.token,

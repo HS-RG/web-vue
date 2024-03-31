@@ -11,7 +11,10 @@
                     </el-icon> 用户管理</el-menu-item>
                     <el-menu-item index="/file"> <el-icon>
                         <DocumentChecked />
-                    </el-icon> 资源管理</el-menu-item>
+                    </el-icon> 模块管理</el-menu-item>
+                  <el-menu-item index="/grade"> <el-icon>
+                    <Files />
+                  </el-icon> 成绩管理</el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
@@ -175,7 +178,7 @@ import {
     searchUser,
     changePassword,
     updateUser,
-    QueryFileList,
+    QueryGradeList,
     getAllCommentCount, getAllLikeCount, findUserById
 } from '@/api/api'
 import { CountTo } from 'vue3-count-to'
@@ -318,7 +321,7 @@ const url =ref('')
 onMounted(() => {
     findUserById({userId:store.getters.isLogIn.id}
     ).then(res=>{
-        url.value=res.data.imageUrl;
+     //   url.value=res.data.imageUrl;
     });
     console.error = () => {}; // 重写console.error方法，使其不执行任何操作
     try {
@@ -328,36 +331,37 @@ onMounted(() => {
             pageSize:5,
             pageNumber:1},{
             params:{
+              token: sessionStorage.getItem("token"),
                 nickname:"",
                 pageSize:5,
                 pageNumber:1
             }
         }).then(res => {
             nextTick(() => {
-                userTotal.value=res.data[res.data.length-1].length
+                userTotal.value=res.length
             })
         }).catch(error=>{
             console.error(error);
         });
-        QueryFileList({
+        QueryGradeList({
             yearTag:-1 ,
             courseTag: "",
             typeTag: "",
             searchString:"",
-            pageSize:200000,
-            pageNum:1},{
+            size:200000,
+            page:0},{
             params:{
                 yearTag:-1 ,
                 courseTag: "",
                 typeTag: "",
                 searchString:"",
-                pageSize:200000,
-                pageNum:1
+              size:200000,
+              page:0
             }
         }).then(res => {
             nextTick(() => {
                 console.log(res)
-               illCaseTotal.value = res.data.total
+               illCaseTotal.value = res.gradeList.total
             })
         }).catch(error=>{
             console.error(error);

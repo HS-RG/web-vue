@@ -3,7 +3,7 @@ import { login as slogin} from '@/api/api'
 
 export const login = data => {
     return post({
-        url: '/auth/login',
+        url: '/user/login',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -12,7 +12,7 @@ export const login = data => {
 }
 export const adminLogin = data => {
     return post({
-        url: '/auth/adminLogin',
+        url: '/user/adminLogin',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -22,7 +22,7 @@ export const adminLogin = data => {
 
 export const register = data =>{
     return post({
-        url: '/auth/register',
+        url: '/user/register',
         data,
         headers: {
             'Content-Type': 'application/json'
@@ -32,8 +32,8 @@ export const register = data =>{
 
 
 export const searchUser = data => {
-    return post2({
-        url: '/user/listByNickname',
+    return post({
+        url: '/user/findAllUser',
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
@@ -42,9 +42,20 @@ export const searchUser = data => {
 
     })
 }
+export const findByName = data => {
+    return post({
+        url: '/user/findByName',
+        data,
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+
+    })
+}
 export const findUserById = data => {
-return post2({
-    url: '/user/selectByUserId',
+return post({
+    url: '/user/findUserById',
     data,
     headers:{
         'Content-Type': 'application/json',
@@ -191,9 +202,20 @@ export const getcollectfiles = data => {
     })
 }
 
-export const QueryFileList = data => {
-    return post3({
-        url: '/file/QueryFileList',
+export const QueryGradeList = data => {
+    return post({
+        url: '/grade/QueryGradeList',
+        data,
+        headers:{
+            'Content-Type': 'multipart/form-data',
+            'Authorization': JSON.parse(sessionStorage.getItem('login')).token
+        }
+    })
+}
+
+export const QueryUserList = data => {
+    return post({
+        url: '/user/QueryUserList',
         data,
         headers:{
             'Content-Type': 'multipart/form-data',
